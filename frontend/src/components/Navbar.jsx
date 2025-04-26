@@ -48,8 +48,24 @@ const Navbar = () => {
       
       <div>
         {
-
+          token
+          ? <div>
+            <img src={assets.profile_pic} alt="" />
+            <img src={assets.dropdown_icon} alt="" />
+            {dropdownOpen && (
+              <div ref={dropdownRef}>
+                <div>
+                  <p onClick={() => { navigate('/my-profile'); setDropdownOpen(false); }}></p>
+                  <p onClick={() => { navigate('/my-appointments'); setDropdownOpen(false); }}></p>
+                  <p onClick={() => { setToken(false); setDropdownOpen(false); }}></p>
+                </div>
+              </div>
+            )}
+          </div>
+          : <button onClick={() => navigate('/login')} >Create Account</button>
         }
+
+        <img onClick={() => setShowMenu(true)} src={assets.menu_icon} alt="" />
       </div>
     </div>
   )
