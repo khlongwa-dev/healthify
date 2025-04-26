@@ -1,12 +1,10 @@
 import appointment_img from './appointment_img.png'
 import header_img from './header_img.png'
-import doctors_img from './doctors_img.png'
 import group_profiles from './group_profiles.png'
 import profile_pic from './profile_pic.png'
 import contact_image from './contact_image.png'
 import about_image from './about_image.png'
 import logo from './logo.svg'
-import new_logo from './new_logo.png'
 import dropdown_icon from './dropdown_icon.svg'
 import menu_icon from './menu_icon.svg'
 import cross_icon from './cross_icon.png'
@@ -43,10 +41,8 @@ import Pediatricians from './Pediatricians.svg'
 export const assets = {
     appointment_img,
     header_img,
-    doctors_img,
     group_profiles,
     logo,
-    new_logo,
     chats_icon,
     verified_icon,
     info_icon,
