@@ -70,6 +70,19 @@ const Navbar = () => {
         }
 
         <img onClick={() => setShowMenu(true)} className='w-6 md:hidden' src={assets.menu_icon} alt="" />
+        {/* ------ Mobile Menu ------ */}
+        <div>
+          <div>
+            <img src={assets.logo} alt="" />
+            <img src={assets.cross_icon} alt="" />
+          </div>
+          <ul>
+            <NavLink></NavLink>
+            <NavLink></NavLink>
+            <NavLink></NavLink>
+            <NavLink></NavLink>
+          </ul>
+        </div>
       </div>
     </div>
   )
