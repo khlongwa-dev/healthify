@@ -77,10 +77,10 @@ const Navbar = () => {
             <img src={assets.cross_icon} alt="" />
           </div>
           <ul>
-            <NavLink></NavLink>
-            <NavLink></NavLink>
-            <NavLink></NavLink>
-            <NavLink></NavLink>
+            <NavLink onClick={() => setShowMenu(false)} to='/' >HOME</NavLink>
+            <NavLink onClick={() => setShowMenu(false)} to='/doctors'>ALL DOCTORS</NavLink>
+            <NavLink onClick={() => setShowMenu(false)} to='/about'>ABOUT</NavLink>
+            <NavLink onClick={() => setShowMenu(false)} to='/contacts'>CONTACTS</NavLink>
           </ul>
         </div>
       </div>
