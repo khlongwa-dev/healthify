@@ -29,11 +29,11 @@ const Navbar = () => {
       <img onClick={() => navigate('/')} src={assets.logo} alt="" />
       <ul>
         <NavLink to='/'>
-          <li className='py-1'>HOME</li>
+          <li>HOME</li>
           <hr />
         </NavLink>
         <NavLink>
-          <li></li>
+          <li>ALL DOCTORS</li>
           <hr />
         </NavLink>
         <NavLink>
