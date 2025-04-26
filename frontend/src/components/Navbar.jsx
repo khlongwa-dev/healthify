@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { assets } from '../assets/assets';
 import { NavLink, useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,10 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [token, setToken] = useState(true);
   const dropdownRef = useRef(null); // Create a ref for the dropdown
+
+  const toggleDropdown = () => {
+    setDropdownOpen(prev => !prev);
+  };
 
   useEffect(()=> {
     const handleClickOustide = (event) => {
