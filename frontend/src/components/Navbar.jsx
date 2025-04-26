@@ -26,7 +26,31 @@ const Navbar = () => {
 
   return (
     <div>
+      <img onClick={() => navigate('/')} src={assets.logo} alt="" />
+      <ul>
+        <NavLink to='/'>
+          <li className='py-1'>HOME</li>
+          <hr />
+        </NavLink>
+        <NavLink>
+          <li></li>
+          <hr />
+        </NavLink>
+        <NavLink>
+          <li></li>
+          <hr />
+        </NavLink>
+        <NavLink>
+          <li></li>
+          <hr />
+        </NavLink>
+      </ul>
       
+      <div>
+        {
+
+        }
+      </div>
     </div>
   )
 }
