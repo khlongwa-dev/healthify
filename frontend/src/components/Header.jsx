@@ -17,6 +17,11 @@ const Header = () => {
                 Book an appointment <img className='w-3' src={assets.arrow_icon} alt="" />
             </a>
         </div>
+
+        {/* -------- Right Side -------- */}
+        <div>
+           <img src={assets.doctors_img} alt=""/>
+        </div>
     </div>
   )
 }
