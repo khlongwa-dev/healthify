@@ -20,7 +20,7 @@ const Header = () => {
 
         {/* -------- Right Side -------- */}
         <div>
-           <img src={assets.doctors_img} alt="" className="w-[734px] h-[596px] object-cover" />
+           <img src={assets.header_img} alt="" className="w-[734px] h-[596px] object-cover" />
         </div>
     </div>
   )
