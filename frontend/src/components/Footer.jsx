@@ -6,10 +6,9 @@ const Footer = () => {
     <div className='md:mx-10'>
       <div className='flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10 mt-40 text-sm'>
         {/* --- left section --- */}
-        <div className='mb-5 w-40'>
-            <img src={assets.logo} alt="" />
-            <p className='w-full md:w-2/3 text-gray-600 leading-6'>Healthify is a convenient app for booking doctor appointments with ease. Healthify has become a go-to solution for patients seeking quick access to healthcare professionals, offering a seamless and efficient way to schedule medical visits anytime, anywhere.
-            </p>
+        <div>
+            <img className='mb-5 w-40'  src={assets.logo} alt="" />
+            <p className='w-full md:w-2/3 text-gray-600 leading-6'>Healthify is a convenient app for booking doctor appointments with ease. Healthify has become a go-to solution for patients seeking quick access to healthcare professionals, offering a seamless and efficient way to schedule medical visits anytime, anywhere.</p>
         </div>
 
         {/* --- mid section --- */}
