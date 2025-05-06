@@ -4,20 +4,20 @@ import { assets } from '../assets/assets'
 const Contacts = () => {
   return (
     <div>
-      <div>
-        <p>CONTACT <span>US</span></p>
+      <div className='text-center text-2xl pt-10 text-gray-500'>
+        <p>CONTACT <span className='text-gray-700 font-semibold'>US</span></p>
       </div>
 
       <div>
-        <img src={assets.contact_image} alt="" />
+        <img className='w-full md:max-w-[360px]' src={assets.contact_image} alt="" />
 
-        <div>
-          <p>OUR OFFICE</p>
-          <p>00000 Willms Station <br /> Suite 000, Washington, USA</p>
-          <p>Tel: (000) 000-0000 <br /> Email: greatstackdev@gmail.com</p>
-          <p>CAREERS AT PRESCRIPTO</p>
-          <p>Learn more about our teams and job openings.</p>
-          <button>Explore Jobs</button>
+        <div className='flex flex-col justify-center items-start gap-6'>
+          <p className='font-semibold text-lg text-gray-600'>OUR OFFICE</p>
+          <p className='text-gray-500'>31 Acutt Street <br /> Durban 4001, KwaZulu-Natal, RSA</p>
+          <p className='text-gray-500'>Tel: (000) 000-0000 <br /> Email: ayandahlongwa21@gmail.com</p>
+          <p className='font-semibold text-lg text-gray-600'>CAREERS AT HEALTHIFY</p>
+          <p className='text-gray-500'>Learn more about our teams and job openings.</p>
+          <button className='border border-black px-8 py-4 text-sm hover hover:bg-black hover:text-white transition-all duration-500'>Explore Jobs</button>
         </div>
       </div>
     </div>
