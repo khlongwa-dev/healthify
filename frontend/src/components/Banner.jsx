@@ -13,7 +13,7 @@ const Banner = () => {
             <p>Book Your Appointment</p>
             <p>With 100+ Trusted Doctors</p>
         </div>
-        <button onClick={()=>{navigate('/login'), scrollTo(0,0)}}></button>
+        <button onClick={()=>{navigate('/login'), scrollTo(0,0)}}>Create account</button>
       </div>
     </div>
   )
