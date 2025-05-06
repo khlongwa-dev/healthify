@@ -32,6 +32,12 @@ const Footer = () => {
             </ul>
         </div>
       </div>
+
+      {/* --- copyright section --- */}
+      <div>
+        <hr />
+        <p>Copyright 2025 @ KHlongwa.dev - All Right Reserved.</p>
+      </div>
     </div>
   )
 }
