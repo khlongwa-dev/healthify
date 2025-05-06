@@ -22,6 +22,15 @@ const Footer = () => {
                 <li>Privacy policy</li>
             </ul> 
         </div>
+
+        {/* --- right section --- */}
+        <div>
+            <p>GET IN TOUCH</p>
+            <ul>
+                <li>+27-63-384-8266</li>
+                <li>ayandahlongwa21@gmail.com</li>
+            </ul>
+        </div>
       </div>
     </div>
   )
