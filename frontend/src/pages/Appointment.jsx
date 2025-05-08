@@ -66,6 +66,11 @@ const Appointment = () => {
     fetchDoctorInfo()
   }, [doctors, doctorId])
 
+  useEffect(()=>{
+    getAvailableSlots()
+    
+  }, [doctorInfo])
+
   return (
     <div>
 
