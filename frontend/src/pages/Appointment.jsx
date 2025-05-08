@@ -71,9 +71,40 @@ const Appointment = () => {
     
   }, [doctorInfo])
 
-  return (
-    <div>
+  useEffect(()=>{
+    console.log(docSlots)
+    
+  }, [docSlots])
 
+  return doctorInfo && (
+    <div>
+      {/* ---- Doctor Details ----- */}
+      <div>
+        <div>
+          <img src={docInfo.image} alt="" />
+        </div>
+        
+        {/* ---- doc info, degree, exp etc. ---- */}
+        <div>
+          <p>
+            {docInfo.name}
+            <img src={assets.verified_icon} alt="" />
+          </p>
+          <div>
+            <p>{docInfo.degree} - {docInfo.speciality}</p>
+            <button>{docInfo.experience}</button>
+          </div>
+
+          {/* ---- soc about ---- */}
+          <div>
+            <p>About <img src={assets.info_icon} alt="" /></p>
+            <p>{docInfo.about}</p>
+          </div>
+          <p>
+            Appointment fee: <span className='text-gray-600'>{currencySymbol}{docInfo.fees}</span>
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
