@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams }  from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import RelatedDoctors from '../components/RelatedDoctors'
+import { assets } from '../assets/assets'
 
 const Appointment = () => {
-  const { doctorId } = useParams()
+  const { docId } = useParams()
   const { doctors, currencySymbol } = useContext(AppContext)
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
@@ -14,7 +15,7 @@ const Appointment = () => {
   const [slotTime, setSlotTime] = useState('')
 
   const fetchDoctorInfo = async () => {
-    const doctorInfo = doctors.find(doc => doc._id === doctorId)
+    const doctorInfo = doctors.find(doctor => doctor._id === docId)
     setDoctorInfo(doctorInfo)
   }
 
@@ -64,7 +65,7 @@ const Appointment = () => {
 
   useEffect(()=>{
     fetchDoctorInfo()
-  }, [doctors, doctorId])
+  }, [doctors, docId])
 
   useEffect(()=>{
     getAvailableSlots()
@@ -72,36 +73,36 @@ const Appointment = () => {
   }, [doctorInfo])
 
   useEffect(()=>{
-    console.log(docSlots)
+    console.log(doctorSlots)
     
-  }, [docSlots])
+  }, [doctorSlots])
 
   return doctorInfo && (
     <div>
       {/* ---- Doctor Details ----- */}
       <div className='flex flex-col sm:flex-row gap-4'>
         <div>
-          <img className='bg-primary w-full sm:max-w-72 rounded-lg' src={docInfo.image} alt="" />
+          <img className='bg-primary w-full sm:max-w-72 rounded-lg' src={doctorInfo.image} alt="" />
         </div>
         
         {/* ---- doc info, degree, exp etc. ---- */}
         <div className='flex-1 border border-gray-400 rounded-lg p-8 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0'>
           <p className='flex items-center gap-2 text-2xl font-medium text-gray-900'>
-            {docInfo.name}
+            {doctorInfo.name}
             <img className='w-5' src={assets.verified_icon} alt="" />
           </p>
           <div className='flex items-center gap-2 text-sm mt-1 text-gray-600'>
-            <p>{docInfo.degree} - {docInfo.speciality}</p>
-            <button className='py-0.5 px-2 border text-xs rounded-full'>{docInfo.experience}</button>
+            <p>{doctorInfo.degree} - {doctorInfo.speciality}</p>
+            <button className='py-0.5 px-2 border text-xs rounded-full'>{doctorInfo.experience}</button>
           </div>
 
           {/* ---- doc about ---- */}
           <div>
             <p className='flex items-center gap-1 text-sm font-medium text-gray-900 mt-3'>About <img src={assets.info_icon} alt="" /></p>
-            <p className='text-sm text-gray-500 max-w-[700px] mt-1'>{docInfo.about}</p>
+            <p className='text-sm text-gray-500 max-w-[700px] mt-1'>{doctorInfo.about}</p>
           </div>
           <p className='text-gray-500 font-medium mt-4'>
-            Appointment fee: <span className='text-gray-600'>{currencySymbol}{docInfo.fees}</span>
+            Appointment fee: <span className='text-gray-600'>{currencySymbol}{doctorInfo.fees}</span>
           </p>
         </div>
       </div>
@@ -111,7 +112,7 @@ const Appointment = () => {
         <p>Booking slots</p>
         <div className='flex gap-3 items-center w-full overflow-x-scroll mt-4'>
           {
-            docSlots.length && docSlots.map((item, index)=>(
+            doctorSlots.length && doctorSlots.map((item, index)=>(
               <div onClick={()=> setSlotIndex(index)} className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex === index ? 'bg-primary text-white ': 'border border-gray-200'}`} key={index}>
                 <p>{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
                 <p>{item[0] && item[0].datetime.getDate()}</p>
@@ -131,7 +132,7 @@ const Appointment = () => {
         <button className='bg-primary text-white text-small font-light px-14 py-3 rounded-full my-6'>Book an appointment</button>
       </div>
       {/* listing related doctors */}
-      <RelatedDoctors doctorId={doctorId} speciality={doctorInfo.speciality}/>
+      <RelatedDoctors docId={docId} speciality={doctorInfo.speciality}/>
     </div>
   )
 }
