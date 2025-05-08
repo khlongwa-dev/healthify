@@ -105,6 +105,31 @@ const Appointment = () => {
           </p>
         </div>
       </div>
+
+      {/* ----- Booking Slots------*/}
+      <div>
+        <p>Booking slots</p>
+        <div>
+          {
+            docSlots.length && docSlots.map((item, index)=>(
+              <div onClick={()=> setSlotIndex(index)} key={index}>
+                <p>{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
+                <p>{item[0] && item[0].datetime.getDate()}</p>
+              </div>
+            ))
+          }
+        </div>
+
+        <div>
+          {docSlots.length && docSlots[slotIndex].map((item, index)=>(
+            <p onClick={()=>setSlotTime(item.time)} key={index}>
+              {item.time.toLowerCase()}
+            </p>
+          ))}
+        </div>
+
+        <button>Book an appointment</button>
+      </div>
     </div>
   )
 }
