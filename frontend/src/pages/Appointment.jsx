@@ -130,6 +130,8 @@ const Appointment = () => {
 
         <button>Book an appointment</button>
       </div>
+      {/* listing related doctors */}
+      <RelatedDoctors doctorId={doctorId} speciality={doctorInfo.speciality}/>
     </div>
   )
 }
