@@ -7,9 +7,9 @@ const RelatedDoctors = ({speciality, doctorId}) => {
     const [relatedDoctors, setRelatedDoctors] = useState([])
     const navigate = useNavigate()
 
-    useNavigate(()=>{
+    useEffect(()=>{
         if (doctors.length > 0 && speciality) {
-            const relatedDoctorsData = doctors.filter((doctor)=>doctor.speciality === doctor.speciality && doctor._id !== docId)
+            const relatedDoctorsData = doctors.filter((doctor)=>doctor.speciality === doctor.speciality && doctor._id !== doctorId)
             setRelatedDoctors(relatedDoctorsData)
         }
     }, [doctors, speciality, doctorId])
@@ -26,8 +26,8 @@ const RelatedDoctors = ({speciality, doctorId}) => {
                     <div className='flex items-center gap-2 text-sm text-center text-green-500'>
                         <p className='w-2 h-2 bg-green-500 rounded-full'></p><p>Available</p>
                     </div>
-                    <p>{item.name}</p>
-                    <p>{item.speciality}</p>
+                    <p className='text-gray-900 text-lg font-medium'>{item.name}</p>
+                    <p className='text-gray-600 text-sm'>{item.speciality}</p>
                 </div>
             </div>
         ))}
