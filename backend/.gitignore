@@ -1,0 +1,45 @@
+# Build
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE (Visual Studio)
+.vscode/
+.vs/
+
+# ASP.NET secrets
+secrets.json
+
+# SQLite database
+*.db
+*.db-journal
+
+# Cloudinary API keys (if stored outside appsettings)
+cloudinary.config.json
+
+# Logs
+*.log
+logs/
+
+# Publish output
+publish/
+out/
+
+# Dependency cache
+packages/
+.nuget/
+
+# Rider
+.idea/
+
+# Mac / Linux
+.DS_Store
+
+# Environment config
+.env
+*.env.*
