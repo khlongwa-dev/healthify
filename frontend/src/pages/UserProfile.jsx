@@ -68,7 +68,12 @@ const UserProfile = () => {
               </select>
               : <p>{userData.gender}</p>
           }
-          
+          <p>Birthday:</p>
+          {
+            isEdit 
+            ? <input type="date" value={userData.dob} onChange={(e) => setUserData(prev => ({ ...prev, dob: e.target.value }))}/>
+            : <p>{userData.dob}</p>
+          }
         </div>
       </div>
     </div>
