@@ -59,7 +59,7 @@ const Navbar = () => {
             {dropdownOpen && (
               <div ref={dropdownRef} className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20'>
                 <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
-                  <p onClick={() => { navigate('/my-profile'); setDropdownOpen(false); }} className='hover:text-black cursor-pointer'>My Profile</p>
+                  <p onClick={() => { navigate('/user-profile'); setDropdownOpen(false); }} className='hover:text-black cursor-pointer'>My Profile</p>
                   <p onClick={() => { navigate('/my-appointments'); setDropdownOpen(false); }} className='hover:text-black cursor-pointer'>My Appointments</p>
                   <p onClick={() => { setToken(false); setDropdownOpen(false); }}>Logout</p>
                 </div>
