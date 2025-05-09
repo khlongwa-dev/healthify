@@ -23,8 +23,8 @@ const UserProfile = () => {
 
       {
         isEdit
-          ? <input type="text" value={userData.name} onChange={e => setUserData(prev => ({ ...prev, name: e.target.value }))} />
-          : <p>{userData.name}</p>
+          ? <input className='bg-gray-50 text-3xl font-medium max-w-60 mt-4' type="text" value={userData.name} onChange={e => setUserData(prev => ({ ...prev, name: e.target.value }))} />
+          : <p className='font-medium text-3xl text-neutral-800 mt-4'>{userData.name}</p>
       }
       <hr/>
       <div>
