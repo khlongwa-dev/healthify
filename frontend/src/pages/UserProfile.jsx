@@ -39,7 +39,21 @@ const UserProfile = () => {
               ? <input type="text" value={userData.phone} onChange={e => setUserData(prev => ({ ...prev, phone: e.target.value }))} />
               : <p>{userData.phone}</p>
           }
-          
+          <p>Address:</p>
+          {
+            isEdit
+              ? <p>
+                <input type="text" value={userData.address.line1} onChange={e => setUserData(prev => ({ ...prev, address: { ...prev.address, line1: e.target.value } }))} />
+                <br />
+                <input type="text" value={userData.address.line2} onChange={e => setUserData(prev => ({ ...prev, address: { ...prev.address, line2: e.target.value } }))} />
+              </p>
+
+              : <p>
+                {userData.address.line1}
+                <br />
+                {userData.address.line2}
+              </p>
+          }
         </div>
       </div>
       
