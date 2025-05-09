@@ -39,16 +39,16 @@ const UserProfile = () => {
               ? <input className='bg-gray-100 max-w-52' type="text" value={userData.phone} onChange={e => setUserData(prev => ({ ...prev, phone: e.target.value }))} />
               : <p className='text-blue-400'>{userData.phone}</p>
           }
-          <p>Address:</p>
+          <p className='font-medium'>Address:</p>
           {
             isEdit
               ? <p>
-                <input type="text" value={userData.address.line1} onChange={e => setUserData(prev => ({ ...prev, address: { ...prev.address, line1: e.target.value } }))} />
+                <input className='bg-gray-50' type="text" value={userData.address.line1} onChange={e => setUserData(prev => ({ ...prev, address: { ...prev.address, line1: e.target.value } }))} />
                 <br />
-                <input type="text" value={userData.address.line2} onChange={e => setUserData(prev => ({ ...prev, address: { ...prev.address, line2: e.target.value } }))} />
+                <input className='bg-gray-50' type="text" value={userData.address.line2} onChange={e => setUserData(prev => ({ ...prev, address: { ...prev.address, line2: e.target.value } }))} />
               </p>
 
-              : <p>
+              : <p className='text-gray-500'>
                 {userData.address.line1}
                 <br />
                 {userData.address.line2}
