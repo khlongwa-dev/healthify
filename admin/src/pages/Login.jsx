@@ -11,13 +11,13 @@ const Login = () => {
             <p className='text-2xl font-semibold m-auto'><span className='text-primary'> {state} </span> Login</p>
             <div>
                 <p>Email</p>
-                <input type="email" required />
+                <input className='border border-[#DADADA] rounded w-full p-2 mt-1' type="email" required />
             </div>
             <div>
                 <p>Password</p>
-                <input type="password" required />
+                <input className='border border-[#DADADA] rounded w-full p-2 mt-1' type="password" required />
             </div>
-            <button>Login</button>
+            <button className='bg-primary text-white w-full py-2 rounded-md text-based'>Login</button>
         </div>
     </form>
   )
