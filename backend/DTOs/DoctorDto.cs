@@ -1,24 +1,22 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace backend.Models
+namespace backend.DTOs
 {
-    public class Doctor
+    public class DoctorDto
     {
-        public int Id { get; set; }
-        public required string Name { get; set; }
-
+         public required string Name { get; set; }
         [EmailAddress]
         public required string Email { get; set; }
         public required string Password { get; set; }
-        public required string ImageUrl { get; set; }
+        public required IFormFile Image { get; set; }
         public required string Specialty { get; set; }
         public required string Degree { get; set; }
         public required string Experience { get; set; }
         public required string About { get; set; }
-        public required bool Availabe { get; set; }
-        public required int Fees { get; set; }
+        public  bool Availabe { get; set; } = true;
+        public int Fees { get; set; }
         public required string AddressLine1 { get; set; }
         public required string AddressLine2 { get; set; }
-        public  DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+        public required DateOnly Date { get; set; }
     }
 }
