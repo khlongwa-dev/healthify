@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "X3oSfimu6aI=",
+  "dgSpecHash": "k20XQv3ib98=",
   "success": true,
   "projectFilePath": "/home/kusasalakhe/Documents/healthify/backend/backend.csproj",
   "expectedPackageFiles": [
+    "/home/kusasalakhe/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/home/kusasalakhe/.nuget/packages/cloudinarydotnet/1.27.5/cloudinarydotnet.1.27.5.nupkg.sha512",
     "/home/kusasalakhe/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/kusasalakhe/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/9.0.4/microsoft.aspnetcore.authentication.jwtbearer.9.0.4.nupkg.sha512",
@@ -25,6 +26,7 @@
     "/home/kusasalakhe/.nuget/packages/microsoft.entityframeworkcore.relational/9.0.4/microsoft.entityframeworkcore.relational.9.0.4.nupkg.sha512",
     "/home/kusasalakhe/.nuget/packages/microsoft.entityframeworkcore.sqlite/9.0.4/microsoft.entityframeworkcore.sqlite.9.0.4.nupkg.sha512",
     "/home/kusasalakhe/.nuget/packages/microsoft.entityframeworkcore.sqlite.core/9.0.4/microsoft.entityframeworkcore.sqlite.core.9.0.4.nupkg.sha512",
+    "/home/kusasalakhe/.nuget/packages/microsoft.entityframeworkcore.tools/9.0.4/microsoft.entityframeworkcore.tools.9.0.4.nupkg.sha512",
     "/home/kusasalakhe/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "/home/kusasalakhe/.nuget/packages/microsoft.extensions.caching.abstractions/9.0.4/microsoft.extensions.caching.abstractions.9.0.4.nupkg.sha512",
     "/home/kusasalakhe/.nuget/packages/microsoft.extensions.caching.memory/9.0.4/microsoft.extensions.caching.memory.9.0.4.nupkg.sha512",
