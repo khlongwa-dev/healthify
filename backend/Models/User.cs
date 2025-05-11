@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using backend.Models.Interfaces;
 
 namespace backend.Models
 {
-    public class User
+    public class User : IUser
     {
+        public int Id { get; set; }
         public required string Name { get; set; }
         
         [EmailAddress]

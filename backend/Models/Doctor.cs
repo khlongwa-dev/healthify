@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using backend.Models.Interfaces;
 
 namespace backend.Models
 {
-    public class Doctor
+    public class Doctor : IUser
     {
         public int Id { get; set; }
         public required string Name { get; set; }
