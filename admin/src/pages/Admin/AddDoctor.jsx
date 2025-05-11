@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../../assets/assets'
 import { AdminContext } from '../../context/AdminContext'
 import { toast } from 'react-toastify'
+import axios from 'axios'
 
 const AddDoctor = () => {
   const [docImg, setDocImg] = useState(false)
@@ -37,9 +38,17 @@ const AddDoctor = () => {
       formData.append('Degree', degree)
       formData.append('Experience', experience)
       formData.append('About', about)
-      formData.append('Fees', fees)
+      formData.append('Fees', Number(fees))
       formData.append('AddressLine1', address1)
       formData.append('AddressLine2', address2)
+
+      const {data} = await axios.post(backendUrl + 'api/admin/add-doctor', formData, {headers: {aToken}})
+
+      if (data.success) {
+        toast.success(data.message)
+      } else {
+        toast.error(data.message)
+      }
       
     } catch (error) {
       
@@ -77,7 +86,7 @@ const AddDoctor = () => {
 
             <div className='flex-1 flex flex-col gap-1'>
               <p>Experience</p>
-              <select onChange={(e)=> setExperience(e.target.value)} value={experience} className='border rounded px-3 py-2' name="" id="">
+              <select onChange={(e)=> setExperience(e.target.value)} value={experience} className='border rounded px-3 py-2'>
                 <option value="1 Year">1 Year</option>
                 <option value="2 Year">2 Year</option>
                 <option value="3 Year">3 Year</option>
@@ -100,7 +109,7 @@ const AddDoctor = () => {
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
             <div className='flex-1 flex flex-col gap-1'>
               <p>Specialty</p>
-              <select onChange={(e)=> setSpecialty(e.target.value)} value={specialty} className='border rofalseunded px-3 py-2' name="" id="">
+              <select onChange={(e)=> setSpecialty(e.target.value)} value={specialty} className='border rounded px-3 py-2'>
                 <option value="General Physician">General Physician</option>
                 <option value="Gynecologist">Gynecologist</option>
                 <option value="Dermatologist">Dermatologist</option>
