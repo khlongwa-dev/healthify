@@ -28,7 +28,7 @@ public class AdminController : ControllerBase
     public async Task<IActionResult> CreateDoctor([FromForm] DoctorDto dto)
     {
         if (_context.Doctors.Any(d => d.Email == dto.Email))
-                return BadRequest("Email already exists.");
+                return BadRequest(new { success = false, message = "Email already exists." });
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
@@ -63,6 +63,12 @@ public class AdminController : ControllerBase
         _context.Doctors.Add(doctor);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(CreateDoctor), new { id = doctor.Id }, doctor);
+        return Ok(new
+        {
+            success = true,
+            message = "Doctor created successfully.",
+            doctor
+        });
+
     }
 }

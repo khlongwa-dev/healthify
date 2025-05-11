@@ -29,10 +29,15 @@ public class AuthenticationController : ControllerBase
         
         if (doctor == null || !BCrypt.Net.BCrypt.Verify(dto.Password, doctor.Password))
             
-            return Unauthorized("Invalid email or password.");
+            return Unauthorized(new { success = false, message = "Invalid email or password." });
 
         var token = _jwt.GenerateToken(doctor);
 
-        return Ok(new { token });
+        return Ok(new
+        {
+            success = true,
+            message = "Login successful.",
+            token = token
+        });
     }
 }
