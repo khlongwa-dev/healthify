@@ -42,3 +42,14 @@ builder.Services.AddScoped<JwtService>();
 // Configure SQLite
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlite("Data Source=doctors.db"));
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
