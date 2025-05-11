@@ -71,7 +71,7 @@ public class AdminController : ControllerBase
         });
     }
 
-    [HttpGet("all-doctors")]
+    [HttpPost("all-doctors")]
     public async Task<IActionResult> GetAllDoctors()
     {
         var doctors = await _context.Doctors.ToListAsync();
