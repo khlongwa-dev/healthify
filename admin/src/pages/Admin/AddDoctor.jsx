@@ -3,9 +3,10 @@ import { assets } from '../../assets/assets'
 
 const AddDoctor = () => {
   return (
-    <form>
-      <p>Add a doctor</p>
-      <div>
+    <form className='m-5 w-full'>
+      <p className='mb-3 text-lg font-medium'>Add a doctor</p>
+
+      <div className='bg-white px-8 py-8 border rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll'>
         <div>
           <label htmlFor="doc-img">
             <img src={assets.upload_area} alt="" />
