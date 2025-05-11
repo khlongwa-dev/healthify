@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { assets } from '../assets/assets'
 import { AdminContext } from '../context/AdminContext'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const Login = () => {
 
@@ -17,8 +18,12 @@ const Login = () => {
 
             if (state === 'Admin') {
                 const {data} = await axios.post(backendUrl + 'api/admin/login', {email, password})
-                if (data.success) {
+                console.log(data.Ok)
+                if (data.token) {
                     setAToken(data.token)
+                    toast.success("Login succesful!")
+                } else {
+                    toast.error("Invalid login")
                 }
             } else {
                 console.log("we are alive.")
