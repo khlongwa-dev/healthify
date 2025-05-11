@@ -5,6 +5,8 @@ using backend.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using CloudinaryDotNet;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,5 +60,13 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings")
 );
+
+// Add Cloudinary instance
+builder.Services.AddSingleton(sp =>
+{
+    var config = builder.Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
+    var account = new Account(config.CloudName, config.ApiKey, config.ApiSecret);
+    return new CloudinaryDotNet.Cloudinary(account);
+});
 
 
