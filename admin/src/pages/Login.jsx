@@ -20,10 +20,11 @@ const Login = () => {
                 const {data} = await axios.post(backendUrl + 'api/admin/login', {email, password})
                 console.log(data.Ok)
                 if (data.token) {
+                    localStorage.setItem('aToken', data.token)
                     setAToken(data.token)
                     toast.success("Login succesful!")
                 } else {
-                    toast.error("Invalid login")
+                    toast.error("Invalid credentials")
                 }
             } else {
                 console.log("we are alive.")
