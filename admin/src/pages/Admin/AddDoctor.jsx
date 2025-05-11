@@ -13,6 +13,20 @@ const AddDoctor = () => {
           <input type="file" id="doc-img" hidden/>
           <p>Upload doctor <br /> picture</p>
         </div>
+
+        <div>
+          <div>
+            <div>
+              <p>Doctor name</p>
+              <input type="text" placeholder='Name' required />
+            </div>
+            
+            <div>
+              <p>Doctor Email</p>
+              <input type="email" placeholder='Email' required />
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   )
