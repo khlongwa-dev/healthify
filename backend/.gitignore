@@ -18,6 +18,8 @@ secrets.json
 # SQLite database
 *.db
 *.db-journal
+*.db-shm
+*.db-wal
 
 # Cloudinary API keys (if stored outside appsettings)
 cloudinary.config.json
@@ -43,3 +45,10 @@ packages/
 # Environment config
 .env
 *.env.*
+
+# migrations
+
+Migrations/
+
+# databases
+.db/
