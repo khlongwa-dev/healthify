@@ -1,7 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { assets } from '../../assets/assets'
 
 const AddDoctor = () => {
+  const [docImg, setDocImg] = useState(false)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [experience, setExperience] = useState('1 Year')
+  const [fees, setFees] = useState('')
+  const [about, setAbout] = useState('')
+  const [specialty, setSpecialty] = useState('General Physician')
+  const [degree, setDegree] = useState('')
+  const [address1, setAddress1] = useState('')
+  const [address2, setAddress2] = useState('')
+
   return (
     <form className='m-5 w-full'>
       <p className='mb-3 text-lg font-medium'>Add a doctor</p>
@@ -56,8 +68,8 @@ const AddDoctor = () => {
           
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
             <div className='flex-1 flex flex-col gap-1'>
-              <p>Speciality</p>
-              <select className='border rounded px-3 py-2' name="" id="">
+              <p>Specialty</p>
+              <select className='border rofalseunded px-3 py-2' name="" id="">
                 <option value="General Physician">General Physician</option>
                 <option value="Gynecologist">Gynecologist</option>
                 <option value="Dermatologist">Dermatologist</option>
