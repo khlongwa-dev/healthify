@@ -48,17 +48,40 @@ const AddDoctor = () => {
             </div>
 
             <div>
-              <p>Doctor Password</p>
-              <input type="number" placeholder='Fee' required />
+              <p>Fees</p>
+              <input type="number" placeholder='Fees' required />
             </div>
           </div>
           
           <div>
             <div>
-              <p>Doctor Password</p>
-              <input type="password" placeholder='Password' required />
+              <p>Speciality</p>
+              <select name="" id="">
+                <option value="General Physician">General Physician</option>
+                <option value="Gynecologist">Gynecologist</option>
+                <option value="Dermatologist">Dermatologist</option>
+                <option value="Pediatrician">Pediatrician</option>
+                <option value="Neurologist">Neurologist</option>
+                <option value="Gastroenterologist">Gastroenterologist</option>
+              </select>
             </div>
+
+            <div>
+              <p>Education</p>
+              <input type="text" placeholder='Education' required />
+            </div>
+
+            <div>
+              <p>Address</p>
+              <input type="text" placeholder='line 1' required/>
+              <input type="text" placeholder='line 2' required/>
+            </div>
+
           </div>
+        </div>
+
+        <div>
+          <p></p>
         </div>
       </div>
     </form>
