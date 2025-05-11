@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from '../../assets/assets'
+import { AdminContext } from '../../context/AdminContext'
+import { toast } from 'react-toastify'
 
 const AddDoctor = () => {
   const [docImg, setDocImg] = useState(false)
@@ -14,8 +16,37 @@ const AddDoctor = () => {
   const [address1, setAddress1] = useState('')
   const [address2, setAddress2] = useState('')
 
+  const { backendUrl, aToken} = useContext(AdminContext)
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
+    
+    try {
+
+      if (!docImg) {
+        return toast.error('Image Not Selected')
+      }
+
+      const formData = new FormData()
+
+      formData.append('Name', name)
+      formData.append('Email', email)
+      formData.append('Password', password)
+      formData.append('Image', docImg)
+      formData.append('Specialty', specialty)
+      formData.append('Degree', degree)
+      formData.append('Experience', experience)
+      formData.append('About', about)
+      formData.append('Fees', fees)
+      formData.append('AddressLine1', address1)
+      formData.append('AddressLine2', address2)
+      
+    } catch (error) {
+      
+    }
+  }
   return (
-    <form className='m-5 w-full'>
+    <form onSubmit={onSubmitHandler} className='m-5 w-full'>
       <p className='mb-3 text-lg font-medium'>Add a doctor</p>
 
       <div className='bg-white px-8 py-8 border rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll'>
