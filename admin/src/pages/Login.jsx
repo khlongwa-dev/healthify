@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { assets } from '../assets/assets'
 import { AdminContext } from '../context/AdminContext'
+import axios from 'axios'
 
 const Login = () => {
 
@@ -15,12 +16,12 @@ const Login = () => {
         try {
 
             if (state === 'Admin') {
-                const {data} = await axios.post(backendUrl + 'the/admin/login/endpoint', {email, password})
+                const {data} = await axios.post(backendUrl + 'api/admin/login', {email, password})
                 if (data.success) {
                     setAToken(data.token)
                 }
             } else {
-
+                console.log("we are alive.")
             }
             
         } catch (error) {
@@ -37,10 +38,10 @@ const Login = () => {
                 <input onChange={(e)=> setEmail(e.target.value)} value={email} className='border border-[#DADADA] rounded w-full p-2 mt-1' type="email" required />
             </div>
             <div className = 'w-full'>
-                <p onChange={(e)=> setPassword(e.target.value)} value={password}>Password</p>
-                <input className='border border-[#DADADA] rounded w-full p-2 mt-1' type="password" required />
+                <p>Password</p>
+                <input onChange={(e)=> setPassword(e.target.value)} value={password} className='border border-[#DADADA] rounded w-full p-2 mt-1' type="password" required />
             </div>
-            <button className='bg-primary text-white w-full py-2 rounded-md text-base'>Login</button>
+            <button className='bg-primary text-white w-full py-2 rounded-md text-base' type='submit'>Login</button>
             {
                 state === 'Admin'
                 ? <p>Doctor Login? <span className='text-primary underline cursor-pointer' onClick={()=>setState('Doctor')}>Click here</span></p>
