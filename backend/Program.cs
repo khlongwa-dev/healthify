@@ -1,7 +1,7 @@
 using System.Text;
 using backend.Data;
 using backend.Services;
-using CloudinaryDotNet;
+using backend.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -53,4 +53,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+// Bind CloudinarySettings from appsettings.json
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings")
+);
+
 
