@@ -81,8 +81,11 @@ const AddDoctor = () => {
         </div>
 
         <div>
-          <p></p>
+          <p>About Doctor</p>
+          <text placeholder='Write doctor about..' rows={5} required/>
         </div>
+
+        <button>Add doctor</button>
       </div>
     </form>
   )
