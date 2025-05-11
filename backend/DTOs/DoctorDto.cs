@@ -5,6 +5,7 @@ namespace backend.DTOs
     public class DoctorDto
     {
          public required string Name { get; set; }
+         
         [EmailAddress]
         public required string Email { get; set; }
         public required string Password { get; set; }
@@ -13,7 +14,6 @@ namespace backend.DTOs
         public required string Degree { get; set; }
         public required string Experience { get; set; }
         public required string About { get; set; }
-        public  bool Availabe { get; set; } = true;
         public int Fees { get; set; }
         public required string AddressLine1 { get; set; }
         public required string AddressLine2 { get; set; }

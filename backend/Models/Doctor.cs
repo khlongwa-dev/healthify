@@ -16,7 +16,7 @@ namespace backend.Models
         public required string Degree { get; set; }
         public required string Experience { get; set; }
         public required string About { get; set; }
-        public required bool Availabe { get; set; }
+        public bool Availabe { get; set; } = true;
         public required int Fees { get; set; }
         public required string AddressLine1 { get; set; }
         public required string AddressLine2 { get; set; }

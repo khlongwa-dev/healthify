@@ -55,7 +55,6 @@ public class AdminController : ControllerBase
             Degree = dto.Degree,
             Experience = dto.Experience,
             About = dto.About,
-            Availabe = dto.Availabe,
             Fees = dto.Fees,
             AddressLine1 = dto.AddressLine1,
             AddressLine2 = dto.AddressLine2
