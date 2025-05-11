@@ -1,0 +1,69 @@
+using Microsoft.AspNetCore.Mvc;
+using backend.Models;
+using backend.Data;
+using backend.DTOs;
+using backend.Services;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Microsoft.EntityFrameworkCore;
+
+namespace backend.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AdminController : ControllerBase
+{
+    private readonly AppDbContext _context;
+    private readonly Cloudinary _cloudinary;
+    private readonly JwtService _jwt;
+
+    public AdminController(AppDbContext context, Cloudinary cloudinary, JwtService jwt)
+    {
+        _context = context;
+        _cloudinary = cloudinary;
+        _jwt = jwt;
+    }
+
+    [HttpPost("add-doctor")]
+    public async Task<IActionResult> CreateDoctor([FromForm] DoctorDto dto)
+    {
+        if (_context.Doctors.Any(d => d.Email == dto.Email))
+                return BadRequest("Email already exists.");
+
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+        string imageUrl = "";
+        if (dto.Image != null && dto.Image.Length > 0)
+        {
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(dto.Image.FileName, dto.Image.OpenReadStream()),
+                Folder = "doctor_profiles"
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            imageUrl = uploadResult.SecureUrl.ToString();
+        }
+
+        var doctor = new Doctor
+        {
+            Name = dto.Name,
+            Email = dto.Email,
+            Password = passwordHash,
+            ImageUrl = imageUrl,
+            Specialty = dto.Specialty,
+            Degree = dto.Degree,
+            Experience = dto.Experience,
+            About = dto.About,
+            Availabe = dto.Availabe,
+            Fees = dto.Fees,
+            AddressLine1 = dto.AddressLine1,
+            AddressLine2 = dto.AddressLine2
+        };
+
+        _context.Doctors.Add(doctor);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(CreateDoctor), new { id = doctor.Id }, doctor);
+    }
+}
