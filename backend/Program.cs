@@ -69,4 +69,17 @@ builder.Services.AddSingleton(sp =>
     return new CloudinaryDotNet.Cloudinary(account);
 });
 
+var app = builder.Build();
+
+// Middleware pipeline
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors("AllowSpecificOrigins");
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+
+app.MapControllers();
+app.Run();
 
