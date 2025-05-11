@@ -69,6 +69,16 @@ public class AdminController : ControllerBase
             message = "Doctor created successfully.",
             doctor
         });
+    }
 
+    [HttpGet("all-doctors")]
+    public async Task<IActionResult> GetAllDoctors()
+    {
+        var doctors = await _context.Doctors.ToListAsync();
+        return Ok(new
+        {
+            success = true,
+            doctors
+        });
     }
 }
