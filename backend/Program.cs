@@ -1,6 +1,7 @@
 using System.Text;
 using backend.Data;
 using backend.Services;
+using backend.Models;
 using backend.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +73,13 @@ builder.Services.AddSingleton(sp =>
 
 var app = builder.Build();
 
+// admin creation support
+if (args.Contains("createsuperuser"))
+{
+    CreateAdminUser(app.Services);
+    return;
+}
+
 // Middleware pipeline
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -84,3 +92,65 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
+// helper methods
+static void CreateAdminUser(IServiceProvider services)
+{
+    using var scope = services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    Console.Write("Enter admin email: ");
+    var email = Console.ReadLine()?.Trim();
+
+    Console.Write("Enter password: ");
+    var password = ReadPassword();
+
+    if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+    {
+        Console.WriteLine("Email and password must not be empty.");
+        return;
+    }
+
+    if (context.Users.Any(u => u.Email == email))
+    {
+        Console.WriteLine("An admin with that email already exists.");
+        return;
+    }
+
+    var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+    var admin = new Admin
+    {
+        Email = email,
+        Password = hashedPassword
+    };
+
+    context.Admins.Add(admin);
+    context.SaveChanges();
+
+    Console.WriteLine("Admin user created successfully.");
+}
+
+static string ReadPassword()
+{
+    var password = string.Empty;
+    ConsoleKey key;
+    do
+    {
+        var keyInfo = Console.ReadKey(intercept: true);
+        key = keyInfo.Key;
+
+        if (key == ConsoleKey.Backspace && password.Length > 0)
+        {
+            password = password[0..^1];
+            Console.Write("\b \b");
+        }
+        else if (!char.IsControl(keyInfo.KeyChar))
+        {
+            password += keyInfo.KeyChar;
+            Console.Write("*");
+        }
+    } while (key != ConsoleKey.Enter);
+
+    Console.WriteLine();
+    return password;
+}
