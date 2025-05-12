@@ -25,7 +25,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> CreateUser([FromForm] UserRegisterDto dto)
+    public async Task<IActionResult> CreateUser([FromBody] UserRegisterDto dto)
     {
         if (_context.Users.Any(d => d.Email == dto.Email))
                 return BadRequest(new { success = false, message = "Email already exists." });
