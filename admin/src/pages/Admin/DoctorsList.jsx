@@ -21,6 +21,10 @@ const DoctorsList = () => {
                 <p>{item.name}</p>
                 <p>{item.specialty}</p>
               </div>
+              <div>
+                <input type="checkbox" checked={item.availabe}/>
+                <p>Available</p>
+              </div>
             </div>
           ))
         }
