@@ -69,7 +69,7 @@ const Navbar = () => {
                 <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
                   <p onClick={() => { navigate('/user-profile'); setDropdownOpen(false); }} className='hover:text-black cursor-pointer'>My Profile</p>
                   <p onClick={() => { navigate('/user-appointments'); setDropdownOpen(false); }} className='hover:text-black cursor-pointer'>My Appointments</p>
-                  <p onClick={() => { logout; setDropdownOpen(false); }}>Logout</p>
+                  <p onClick={() => { logout(); setDropdownOpen(false); }} className='hover:text-black cursor-pointer'>Logout</p>
                 </div>
               </div>
             )}
