@@ -81,4 +81,24 @@ public class AdminController : ControllerBase
             doctors
         });
     }
+
+    [HttpPost("change-availability")]
+    public async Task<IActionResult> ChangeAvailability([FromBody] Dictionary<string, int> body)
+    {
+        if (!body.TryGetValue("docId", out int docId))
+        {
+            return BadRequest(new { success = false, message = "Missing doctor ID." });
+        }
+
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
+        if (doctor == null)
+        {
+            return NotFound(new { success = false, message = "Doctor not found." });
+        }
+
+        doctor.Available = !doctor.Available;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Doctor availability updated.", availability = doctor.Available });
+    }
 }

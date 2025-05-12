@@ -23,18 +23,22 @@ public class DoctorController : ControllerBase
     }
 
     [HttpPost("change-availability")]
-    public async Task<IActionResult> ChangeAvailability([FromBody] DoctorDto dto)
+    public async Task<IActionResult> ChangeAvailability([FromBody] Dictionary<string, int> body)
     {
-        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == dto.Id);
+        if (!body.TryGetValue("docId", out int docId))
+        {
+            return BadRequest(new { success = false, message = "Missing doctor ID." });
+        }
+
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
         if (doctor == null)
-    {
-        return NotFound(new { message = "Doctor not found." });
-    }
+        {
+            return NotFound(new { success = false, message = "Doctor not found." });
+        }
 
-    doctor.Availabe = !doctor.Availabe;
+        doctor.Available = !doctor.Available;
+        await _context.SaveChangesAsync();
 
-    await _context.SaveChangesAsync();
-
-    return Ok(new { success = true, message = "Doctor availability updated.", availability = doctor.Availabe });
+        return Ok(new { success = true, message = "Doctor availability updated.", availability = doctor.Available });
     }
 }
