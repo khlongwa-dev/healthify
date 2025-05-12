@@ -11,7 +11,20 @@ const DoctorsList = () => {
   }, [aToken])
   return (
     <div>
-      
+      <h1>All Doctors</h1>
+      <div>
+        {
+          doctors.map((item, index)=>(
+            <div key={index}>
+              <img src={item.imageUrl} alt="" />
+              <div>
+                <p>{item.name}</p>
+                <p>{item.specialty}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
     </div>
   )
 }
