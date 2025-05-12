@@ -42,7 +42,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("user/login")]
-    public IActionResult UserLogin([FromBody] LoginDto dto)
+    public IActionResult UserLogin([FromBody] UserLoginDto dto)
     {
         var user = _context.Users.FirstOrDefault(d => d.Email == dto.Email);
         
