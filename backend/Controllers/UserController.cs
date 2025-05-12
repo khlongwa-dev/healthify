@@ -43,5 +43,21 @@ public class UserController : ControllerBase
         return Ok(new { success = true, user });
     }
 
-    
+    [HttpPost("update-profile")]
+    public async Task<IActionResult> UpdateUserProfile([FromBody] UserUpdateDto dto)
+    {
+        string imageUrl = "";
+        if (dto.Image != null && dto.Image.Length > 0)
+        {
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(dto.Image.FileName, dto.Image.OpenReadStream()),
+                Folder = "doctor_profiles"
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            imageUrl = uploadResult.SecureUrl.ToString();
+        }
+        return Ok(new { success = true, message = "Doctor availability updated.", user });
+    }
 }
