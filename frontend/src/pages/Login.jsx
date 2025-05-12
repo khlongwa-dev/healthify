@@ -1,10 +1,12 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
   const { backendUrl, token, setToken } = useContext(AppContext)
+  const navigate = useNavigate()
 
   const [state, setState] = useState('Sign Up')
   const [email, setEmail] = useState('')
@@ -17,18 +19,22 @@ const Login = () => {
     try {
 
       if (state === 'Sign Up') {
+        
         const {data} = await axios.post(backendUrl + 'api/user/register', {name, password, email})
+
         if(data.success) {
           localStorage.setItem('token', data.token)
           setToken(data.token)
+
         } else {
           toast.error(data.message)
         }
       } else {
-        const {data} = await axios.post(backendUrl + 'api/authentication/user/login', {name, password, email})
+        const {data} = await axios.post(backendUrl + 'api/authentication/user/login', {password, email})
         if(data.success) {
           localStorage.setItem('token', data.token)
           setToken(data.token)
+
         } else {
           toast.error(data.message)
         }
@@ -38,6 +44,12 @@ const Login = () => {
       
     }
   }
+
+  useEffect(()=>{
+    if (token) {
+      navigate('/')
+    }
+  })
   
   return (
     <form onSubmit={onSubmitHandler} className='min-h-[80vh] flex items-center'>
@@ -49,18 +61,18 @@ const Login = () => {
           state === "Sign Up" &&
           <div className='w-full'>
             <p>Full Name</p>
-            <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="text" onChange={(e)=>setName(e.target.name)} value={name}/>
+            <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="text" onChange={(e)=>setName(e.target.value)} value={name}/>
           </div>
         }
 
         <div className='w-full'>
           <p>Email</p>
-          <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="email" onChange={(e)=>setEmail(e.target.email)} value={email}/>
+          <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="email" onChange={(e)=>setEmail(e.target.value)} value={email}/>
         </div>
 
         <div className='w-full'>
           <p>Password</p>
-          <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="password" onChange={(e)=>setPassword(e.target.password)} value={password}/>
+          <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="password" onChange={(e)=>setPassword(e.target.value)} value={password}/>
         </div>
 
         <button type='submit' className='bg-primary text-white w-full py-2 rounded-md text-base'>{state === 'Sign Up' ? "Create Account" : "Login"}</button>
