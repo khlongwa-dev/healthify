@@ -23,9 +23,18 @@ public class DoctorController : ControllerBase
     }
 
     [HttpPost("change-availability")]
-    public async Task<IActionResult> ChangeAvailability([FromForm] DoctorDto dto)
+    public async Task<IActionResult> ChangeAvailability([FromBody] DoctorDto dto)
     {
         var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == dto.Id);
-        
+        if (doctor == null)
+    {
+        return NotFound(new { message = "Doctor not found." });
+    }
+
+    doctor.Availabe = !doctor.Availabe;
+
+    await _context.SaveChangesAsync();
+
+    return Ok(new { success = true, message = "Doctor availability updated.", availability = doctor.Availabe });
     }
 }
