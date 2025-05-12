@@ -4,7 +4,8 @@ namespace backend.DTOs
 {
     public class DoctorDto
     {
-         public required string Name { get; set; }
+        public int Id { get; set; }
+        public required string Name { get; set; }
          
         [EmailAddress]
         public required string Email { get; set; }

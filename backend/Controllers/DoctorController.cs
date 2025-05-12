@@ -25,6 +25,7 @@ public class DoctorController : ControllerBase
     [HttpPost("change-availability")]
     public async Task<IActionResult> ChangeAvailability([FromForm] DoctorDto dto)
     {
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == dto.Id);
         
     }
 }
