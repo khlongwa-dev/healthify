@@ -6,6 +6,7 @@ import RelatedDoctors from '../components/RelatedDoctors'
 
 const Appointment = () => {
   const {docId} = useParams()
+  console.log(docId)
   const {doctors, currencySymbol} = useContext(AppContext)
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
@@ -15,7 +16,7 @@ const Appointment = () => {
   const [slotTime, setSlotTime] = useState('')
 
   const fetchDocInfo = async () => {
-    const docInfo = doctors.find(doc => doc._id === docId)
+    const docInfo = doctors.find(doc => doc.id === parseInt(docId))
     setDocInfo(docInfo)
   }
 
@@ -70,11 +71,9 @@ const Appointment = () => {
 
   useEffect(()=>{
     getAvailableSlots()
-    
   }, [docInfo])
 
   useEffect(()=>{
-    console.log(docSlots)
     
   }, [docSlots])
 
@@ -83,7 +82,7 @@ const Appointment = () => {
       {/* ---- Doctor Details ----- */}
       <div className='flex flex-col sm:flex-row gap-4'>
         <div>
-          <img className='bg-primary w-full sm:max-w-72 rounded-lg' src={docInfo.image} alt="" />
+          <img className='bg-primary w-full sm:max-w-72 rounded-lg' src={docInfo.imageUrl} alt="" />
         </div>
         
         {/* ---- doc info, degree, exp etc. ---- */}
@@ -93,7 +92,7 @@ const Appointment = () => {
             <img className='w-5' src={assets.verified_icon} alt="" />
           </p>
           <div className='flex items-center gap-2 text-sm mt-1 text-gray-600'>
-            <p>{docInfo.degree} - {docInfo.speciality}</p>
+            <p>{docInfo.degree} - {docInfo.specialty}</p>
             <button className='py-0.5 px-2 border text-xs rounded-full'>{docInfo.experience}</button>
           </div>
 
@@ -133,7 +132,7 @@ const Appointment = () => {
         <button className='bg-primary text-white text-small font-light px-14 py-3 rounded-full my-6'>Book an appointment</button>
       </div>
       {/* listing related doctors */}
-      <RelatedDoctors docId={docId} speciality={docInfo.speciality}/>
+      <RelatedDoctors docId={docId} specialty={docInfo.specialty}/>
     </div>
   )
 }
