@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react'
-import { assets } from '../assets/assets'
 import { AdminContext } from '../context/AdminContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -17,7 +16,7 @@ const Login = () => {
         try {
 
             if (state === 'Admin') {
-                const {data} = await axios.post(backendUrl + 'api/admin/login', {email, password})
+                const {data} = await axios.post(backendUrl + 'api/authentication/admin/login', {email, password})
             
                 if (data.token) {
                     localStorage.setItem('aToken', data.token)
