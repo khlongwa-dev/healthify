@@ -78,4 +78,33 @@ public class AuthenticationController : ControllerBase
             token = token
         });
     }
+
+    [HttpPost("user/register")]
+    public async Task<IActionResult> CreateUser([FromBody] UserRegisterDto dto)
+    {
+        if (_context.Users.Any(d => d.Email == dto.Email))
+                return BadRequest(new { success = false, message = "Email already exists." });
+
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+        var user = new User
+        {
+            Name = dto.Name,
+            Email = dto.Email,
+            Password = passwordHash,
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        var token = _jwt.GenerateToken(user);
+
+        return Ok(new
+        {
+            success = true,
+            message = "User created successfully.",
+            user,
+            token
+        });
+    }
 }
