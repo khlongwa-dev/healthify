@@ -22,23 +22,14 @@ public class DoctorController : ControllerBase
         _jwt = jwt;
     }
 
-    [HttpPost("change-availability")]
-    public async Task<IActionResult> ChangeAvailability([FromBody] Dictionary<string, int> body)
+    [HttpPost("list")]
+    public async Task<IActionResult> GetDoctorList()
     {
-        if (!body.TryGetValue("docId", out int docId))
+        var doctors = await _context.Doctors.ToListAsync();
+        return Ok(new
         {
-            return BadRequest(new { success = false, message = "Missing doctor ID." });
-        }
-
-        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
-        if (doctor == null)
-        {
-            return NotFound(new { success = false, message = "Doctor not found." });
-        }
-
-        doctor.Available = !doctor.Available;
-        await _context.SaveChangesAsync();
-
-        return Ok(new { success = true, message = "Doctor availability updated.", availability = doctor.Available });
+            success = true,
+            doctors
+        });
     }
 }
