@@ -22,7 +22,7 @@ public class DoctorController : ControllerBase
         _jwt = jwt;
     }
 
-    [HttpPost("list")]
+    [HttpGet("list")]
     public async Task<IActionResult> GetDoctorList()
     {
         var doctors = await _context.Doctors.ToListAsync();
