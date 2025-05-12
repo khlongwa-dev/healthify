@@ -1,15 +1,23 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import { assets } from '../assets/assets';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
 
 const Navbar = () => {
 
   const navigate = useNavigate();
+
+  const {token, setToken} = useContext(AppContext)
+
   const [showMenu, setShowMenu] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [token, setToken] = useState(true);
+
   const dropdownRef = useRef(null); // Create a ref for the dropdown
 
+  const logout = () => {
+    setToken(false)
+    localStorage.removeItem('token')
+  }
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
   };
@@ -61,7 +69,7 @@ const Navbar = () => {
                 <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
                   <p onClick={() => { navigate('/user-profile'); setDropdownOpen(false); }} className='hover:text-black cursor-pointer'>My Profile</p>
                   <p onClick={() => { navigate('/user-appointments'); setDropdownOpen(false); }} className='hover:text-black cursor-pointer'>My Appointments</p>
-                  <p onClick={() => { setToken(false); setDropdownOpen(false); }}>Logout</p>
+                  <p onClick={() => { logout; setDropdownOpen(false); }}>Logout</p>
                 </div>
               </div>
             )}
