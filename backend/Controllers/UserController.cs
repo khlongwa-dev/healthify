@@ -24,32 +24,24 @@ public class UserController : ControllerBase
         _jwt = jwt;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> CreateUser([FromBody] UserRegisterDto dto)
+    [HttpPost("profile")]
+    public async Task<IActionResult> GetUserProfile([FromBody] Dictionary<string, int> body)
     {
-        if (_context.Users.Any(d => d.Email == dto.Email))
-                return BadRequest(new { success = false, message = "Email already exists." });
-
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-
-        var user = new User
+        if (!body.TryGetValue("userId", out int userId))
         {
-            Name = dto.Name,
-            Email = dto.Email,
-            Password = passwordHash,
-        };
+            return BadRequest(new { success = false, message = "Missing user ID." });
+        }
 
-        _context.Users.Add(user);
+        var user = await _context.Users.FirstOrDefaultAsync(d => d.Id == userId);
+        if (user == null)
+        {
+            return NotFound(new { success = false, message = "User not found." });
+        }
+
         await _context.SaveChangesAsync();
 
-        var token = _jwt.GenerateToken(user);
-
-        return Ok(new
-        {
-            success = true,
-            message = "User created successfully.",
-            user,
-            token
-        });
+        return Ok(new { success = true, user });
     }
+
+    
 }
