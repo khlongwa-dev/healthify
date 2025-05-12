@@ -25,37 +25,18 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> CreateUser([FromForm] UserDto dto)
+    public async Task<IActionResult> CreateUser([FromForm] UserRegisterDto dto)
     {
         if (_context.Users.Any(d => d.Email == dto.Email))
                 return BadRequest(new { success = false, message = "Email already exists." });
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
-        string imageUrl = "";
-        if (dto.Image != null && dto.Image.Length > 0)
-        {
-            var uploadParams = new ImageUploadParams
-            {
-                File = new FileDescription(dto.Image.FileName, dto.Image.OpenReadStream()),
-                Folder = "user_profiles"
-            };
-
-            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-            imageUrl = uploadResult.SecureUrl.ToString();
-        }
-
         var user = new User
         {
             Name = dto.Name,
             Email = dto.Email,
             Password = passwordHash,
-            ImageUrl = imageUrl,
-            DoB = dto.DoB,
-            AddressLine1 = dto.AddressLine1,
-            AddressLine2 = dto.AddressLine2,
-            Gender = dto.Gender,
-            Phone = dto.Phone
         };
 
         _context.Users.Add(user);

@@ -42,9 +42,11 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("user/login")]
-    public IActionResult UserLogin([FromBody] UserLoginDto dto)
+    public IActionResult UserLogin([FromBody] LoginDto dto)
     {
         var user = _context.Users.FirstOrDefault(d => d.Email == dto.Email);
+
+        
         
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
             
