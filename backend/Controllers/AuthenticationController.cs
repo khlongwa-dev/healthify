@@ -22,8 +22,8 @@ public class AuthenticationController : ControllerBase
         _jwt = jwt;
     }
 
-    [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginDto dto)
+    [HttpPost("doctor/login")]
+    public IActionResult DoctorLogin([FromBody] LoginDto dto)
     {
         var doctor = _context.Doctors.FirstOrDefault(d => d.Email == dto.Email);
         
@@ -32,6 +32,44 @@ public class AuthenticationController : ControllerBase
             return Unauthorized(new { success = false, message = "Invalid email or password." });
 
         var token = _jwt.GenerateToken(doctor);
+
+        return Ok(new
+        {
+            success = true,
+            message = "Login successful.",
+            token = token
+        });
+    }
+
+    [HttpPost("user/login")]
+    public IActionResult UserLogin([FromBody] LoginDto dto)
+    {
+        var user = _context.Users.FirstOrDefault(d => d.Email == dto.Email);
+        
+        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
+            
+            return Unauthorized(new { success = false, message = "Invalid email or password." });
+
+        var token = _jwt.GenerateToken(user);
+
+        return Ok(new
+        {
+            success = true,
+            message = "Login successful.",
+            token = token
+        });
+    }
+
+    [HttpPost("admin/login")]
+    public IActionResult AdminLogin([FromBody] LoginDto dto)
+    {
+        var user = _context.Users.FirstOrDefault(d => d.Email == dto.Email);
+        
+        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
+            
+            return Unauthorized(new { success = false, message = "Invalid email or password." });
+
+        var token = _jwt.GenerateToken(user);
 
         return Ok(new
         {
