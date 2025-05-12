@@ -61,11 +61,14 @@ public class UserController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
+        var token = _jwt.GenerateToken(user);
+
         return Ok(new
         {
             success = true,
             message = "User created successfully.",
-            user
+            user,
+            token
         });
     }
 }

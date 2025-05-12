@@ -154,3 +154,5 @@ static string ReadPassword()
     Console.WriteLine();
     return password;
 }
+
+//dotnet run -- createsuperuser
