@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using backend.Models.Interfaces;
-using System.Text.Json;
 
 namespace backend.Models
 {
@@ -23,14 +21,6 @@ namespace backend.Models
         public required string AddressLine1 { get; set; }
         public required string AddressLine2 { get; set; }
         public  DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
-
-        public string SlotsBooked { get; set; } = "{}";
-        
-        [NotMapped]
-        public Dictionary<string, List<string>> BookedSlots
-        {
-            get => JsonSerializer.Deserialize<Dictionary<string, List<string>>>(SlotsBooked) ?? new();
-            set => SlotsBooked = JsonSerializer.Serialize(value);
-        }
+        public ICollection<BookedSlot> BookedSlots { get; set; } = new List<BookedSlot>();
     }
 }
