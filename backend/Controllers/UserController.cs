@@ -116,4 +116,13 @@ public class UserController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(new { success = true, message = "Profile updated", user });
     }
+
+    [HttpPost("book-appointment")]
+    public async Task<IActionResult> BookAppointment([FromForm] BookingAppointmentDto dto)
+    {
+        /*
+            
+        */
+        return Ok(new { success = true, message = "Profile updated", user });
+    }
 }

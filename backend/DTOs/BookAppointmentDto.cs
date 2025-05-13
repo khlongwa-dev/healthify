@@ -1,6 +1,8 @@
-namespace backend.Models
+using backend.Models;
+
+namespace backend.DTOs
 {
-    public class Appointment
+    public class BookingAppointmentDto
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -10,11 +12,7 @@ namespace backend.Models
         
         public required Doctor Doctor { get; set; }
         public required User User { get; set; }
-
         public int DoctorFee { get; set; }
-        public required DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
-        public bool Cancelled { get; set; } = false;
-        public bool Paid { get; set; } = false;
-        public bool IsCompleted { get; set; } = false;
+    
     }
 }

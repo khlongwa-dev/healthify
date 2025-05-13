@@ -24,13 +24,13 @@ namespace backend.Models
         public required string AddressLine2 { get; set; }
         public  DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
-        public string AvailableSlotsJson { get; set; } = "{}";
+        public string SlotsBooked { get; set; } = "{}";
         
         [NotMapped]
-        public Dictionary<string, List<string>> AvailableSlots
+        public Dictionary<string, List<string>> BookedSlots
         {
-            get => JsonSerializer.Deserialize<Dictionary<string, List<string>>>(AvailableSlotsJson) ?? new();
-            set => AvailableSlotsJson = JsonSerializer.Serialize(value);
+            get => JsonSerializer.Deserialize<Dictionary<string, List<string>>>(SlotsBooked) ?? new();
+            set => SlotsBooked = JsonSerializer.Serialize(value);
         }
     }
 }
