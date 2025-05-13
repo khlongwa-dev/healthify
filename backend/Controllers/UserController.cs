@@ -159,9 +159,16 @@ public class UserController : ControllerBase
         if (!doctor.Available)
             return BadRequest(new { success = false, message = "Doctor is not available." });
 
+
+        var bookedSlots = string.IsNullOrWhiteSpace(doctor.SlotsBooked)
+            ? new Dictionary<string, List<string>>()
+            : JsonSerializer.Deserialize<Dictionary<string, List<string>>>(doctor.SlotsBooked)
+                ?? new Dictionary<string, List<string>>();
+
         
 
         await _context.Appointments.AddAsync(appointment);
         await _context.SaveChangesAsync();
+
     }
 }
