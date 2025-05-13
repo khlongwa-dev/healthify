@@ -8,7 +8,7 @@ const UserProfile = () => {
 
   return userData && (
     <div className='max-w-lg flex flex-col gap-2 text-sm'>
-      <img className='w-36 rounded' src={userData.image} alt="" />
+      <img className='w-36 rounded' src={userData.imageUrl} alt="" />
 
       {
         isEdit
@@ -32,15 +32,15 @@ const UserProfile = () => {
           {
             isEdit
               ? <p>
-                <input className='bg-gray-50' type="text" value={userData.address.line1} onChange={e => setUserData(prev => ({ ...prev, address: { ...prev.address, line1: e.target.value } }))} />
+                <input className='bg-gray-50' type="text" value={userData.addressLine1} onChange={e => setUserData(prev => ({ ...prev, addressLine1: e.target.value }))} />
                 <br />
-                <input className='bg-gray-50' type="text" value={userData.address.line2} onChange={e => setUserData(prev => ({ ...prev, address: { ...prev.address, line2: e.target.value } }))} />
+                <input className='bg-gray-50' type="text" value={userData.addressLine2} onChange={e => setUserData(prev => ({ ...prev, addressLine2: e.target.value }))} />
               </p>
 
               : <p className='text-gray-500'>
-                {userData.address.line1}
+                {userData.addressLine1}
                 <br />
-                {userData.address.line2}
+                {userData.addressLine2}
               </p>
           }
         </div>
