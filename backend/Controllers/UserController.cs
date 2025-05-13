@@ -118,11 +118,33 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("book-appointment")]
-    public async Task<IActionResult> BookAppointment([FromForm] BookingAppointmentDto dto)
+    public async Task<IActionResult> BookAppointment([FromBody] BookingAppointmentDto dto)
     {
-        /*
-            
-        */
-        return Ok(new { success = true, message = "Profile updated", user });
+        var token = Request.Headers["token"].FirstOrDefault();
+       
+        if (string.IsNullOrEmpty(token)) return Unauthorized(new { success = false, message = "Invalid token" });
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            return Unauthorized(new { success = false, message = "User ID claim not found" });
+        }
+
+        if (!int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid user ID in token" });
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return NotFound(new { success = false, message = "User not found" });
+        }
     }
 }
