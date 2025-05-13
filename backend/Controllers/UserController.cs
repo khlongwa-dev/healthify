@@ -72,7 +72,22 @@ public class UserController : ControllerBase
             return Unauthorized(new { success = false, message = "Invalid token" });
         }
 
-        
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            return Unauthorized(new { success = false, message = "User ID claim not found" });
+        }
+
+        if (!int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid user ID in token" });
+        }
+
+       
+
+        if (!string.IsNullOrEmpty(imageUrl)) {
+            user.ImageUrl = imageUrl;
+        }
 
 
         await _context.SaveChangesAsync();
