@@ -6,6 +6,7 @@ using backend.Services;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace backend.Controllers;
 
@@ -146,5 +147,21 @@ public class UserController : ControllerBase
         {
             return NotFound(new { success = false, message = "User not found" });
         }
+
+        if (!int.TryParse(dto.DoctorId, out int docId))
+            return BadRequest(new { success = false, message = "Invalid doctor ID format" });
+
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
+
+        if (doctor == null)
+            return NotFound(new { success = false, message = "Doctor not found" });
+        
+        if (!doctor.Available)
+            return BadRequest(new { success = false, message = "Doctor is not available." });
+
+        
+
+        await _context.Appointments.AddAsync(appointment);
+        await _context.SaveChangesAsync();
     }
 }
