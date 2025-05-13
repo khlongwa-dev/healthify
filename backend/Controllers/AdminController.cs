@@ -74,7 +74,10 @@ public class AdminController : ControllerBase
     [HttpPost("all-doctors")]
     public async Task<IActionResult> GetAllDoctors()
     {
-        var doctors = await _context.Doctors.ToListAsync();
+        var doctors = await _context.Doctors
+            .Include(d => d.BookedSlots)
+            .ToListAsync();
+
         return Ok(new
         {
             success = true,
