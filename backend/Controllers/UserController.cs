@@ -122,65 +122,51 @@ public class UserController : ControllerBase
     public async Task<IActionResult> BookAppointment([FromBody] BookingAppointmentDto dto)
     {
         var token = Request.Headers["token"].FirstOrDefault();
-       
-        if (string.IsNullOrEmpty(token)) return Unauthorized(new { success = false, message = "Invalid token" });
+        if (string.IsNullOrEmpty(token)) 
+            return Unauthorized(new { success = false, message = "Invalid token" });
 
         var principal = _jwt.ValidateToken(token);
         if (principal == null)
-        {
             return Unauthorized(new { success = false, message = "Invalid token" });
-        }
 
         var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-        if (userIdClaim == null)
-        {
-            return Unauthorized(new { success = false, message = "User ID claim not found" });
-        }
-
-        if (!int.TryParse(userIdClaim.Value, out int userId))
-        {
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
             return Unauthorized(new { success = false, message = "Invalid user ID in token" });
-        }
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
-        {
             return NotFound(new { success = false, message = "User not found" });
-        }
 
         if (!int.TryParse(dto.DoctorId, out int docId))
             return BadRequest(new { success = false, message = "Invalid doctor ID format" });
 
-        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
+        var doctor = await _context.Doctors
+            .Include(d => d.BookedSlots)
+            .FirstOrDefaultAsync(d => d.Id == docId);
 
         if (doctor == null)
             return NotFound(new { success = false, message = "Doctor not found" });
-        
+
         if (!doctor.Available)
             return BadRequest(new { success = false, message = "Doctor is not available." });
 
+        // Check if slot already booked
+        bool slotExists = doctor.BookedSlots
+            .Any(bs => bs.SlotDate == dto.SlotDate && bs.SlotTime == dto.SlotTime);
 
-        var bookedSlots = string.IsNullOrWhiteSpace(doctor.SlotsBooked)
-            ? new Dictionary<string, List<string>>()
-            : JsonSerializer.Deserialize<Dictionary<string, List<string>>>(doctor.SlotsBooked)
-                ?? new Dictionary<string, List<string>>();
+        if (slotExists)
+            return BadRequest(new { success = false, message = "Slot not available" });
 
-        
-        if (bookedSlots.TryGetValue(dto.SlotDate, out var times))
+        // Add new booked slot
+        var bookedSlot = new BookedSlot
         {
-            if (times.Contains(dto.SlotTime))
-                return BadRequest(new { success = false, message = "Slot not available" });
+            DoctorId = doctor.Id,
+            SlotDate = dto.SlotDate,
+            SlotTime = dto.SlotTime
+        };
+        await _context.BookedSlots.AddAsync(bookedSlot);
 
-            times.Add(dto.SlotTime);
-        }
-        else
-        {
-            bookedSlots[dto.SlotDate] = new List<string> { dto.SlotTime };
-        }
-
-        doctor.SlotsBooked = JsonSerializer.Serialize(bookedSlots);
-        _context.Doctors.Update(doctor);
-
+        // Create appointment
         var appointment = new Appointment
         {
             UserId = userId,
@@ -198,6 +184,7 @@ public class UserController : ControllerBase
 
         await _context.Appointments.AddAsync(appointment);
         await _context.SaveChangesAsync();
+
         return Ok(new { success = true, message = "Appointment booked successfully" });
     }
 }
