@@ -178,10 +178,26 @@ public class UserController : ControllerBase
             bookedSlots[dto.SlotDate] = new List<string> { dto.SlotTime };
         }
 
-        
+        doctor.SlotsBooked = JsonSerializer.Serialize(bookedSlots);
+        _context.Doctors.Update(doctor);
+
+        var appointment = new Appointment
+        {
+            UserId = userId,
+            DoctorId = doctor.Id,
+            SlotDate = dto.SlotDate,
+            SlotTime = dto.SlotTime,
+            Doctor = doctor,
+            User = user,
+            DoctorFee = doctor.Fees,
+            Date = DateOnly.FromDateTime(DateTime.Today),
+            Cancelled = false,
+            Paid = false,
+            IsCompleted = false
+        };
 
         await _context.Appointments.AddAsync(appointment);
         await _context.SaveChangesAsync();
-
+        return Ok(new { success = true, message = "Appointment booked successfully" });
     }
 }
