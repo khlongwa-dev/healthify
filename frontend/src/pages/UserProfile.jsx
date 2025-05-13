@@ -1,15 +1,31 @@
 import React, { useContext, useState } from 'react'
 import { AppContext } from '../context/AppContext'
+import {assets} from '../assets/assets'
 
 const UserProfile = () => {
-  const {userData, setUserData} = useContext(AppContext)
+  const {userData, setUserData, token, backendUrl, loadUserProfileData} = useContext(AppContext)
 
   const [isEdit, setIsEdit] = useState(false)
+  const [image, setImage] = useState(false)
+
+  const updateUserProfileData = async () => {
+    
+  }
 
   return userData && (
     <div className='max-w-lg flex flex-col gap-2 text-sm'>
-      <img className='w-36 rounded' src={userData.imageUrl} alt="" />
-
+      {
+        isEdit
+        ? <label htmlFor='image'>
+            <div>
+              <img src={image ? URL.createObjectURL(image):userData.imageUrl} alt="" />
+              <img src={image ? '': assets.upload_icon} alt="" />
+            </div>
+            <input onChange={(e)=>setImage(e.target.files[0])} type="file" id='image' hidden/>
+        </label>
+        : <img className='w-36 rounded' src={userData.imageUrl} alt="" />
+      }
+      
       {
         isEdit
           ? <input className='bg-gray-50 text-3xl font-medium max-w-60 mt-4' type="text" value={userData.name} onChange={e => setUserData(prev => ({ ...prev, name: e.target.value }))} />
