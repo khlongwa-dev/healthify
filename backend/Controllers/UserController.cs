@@ -166,6 +166,19 @@ public class UserController : ControllerBase
                 ?? new Dictionary<string, List<string>>();
 
         
+        if (bookedSlots.TryGetValue(dto.SlotDate, out var times))
+        {
+            if (times.Contains(dto.SlotTime))
+                return BadRequest(new { success = false, message = "Slot not available" });
+
+            times.Add(dto.SlotTime);
+        }
+        else
+        {
+            bookedSlots[dto.SlotDate] = new List<string> { dto.SlotTime };
+        }
+
+        
 
         await _context.Appointments.AddAsync(appointment);
         await _context.SaveChangesAsync();
