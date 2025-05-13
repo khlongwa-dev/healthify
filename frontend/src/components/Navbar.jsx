@@ -7,7 +7,7 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-  const {token, setToken} = useContext(AppContext)
+  const {token, setToken, userData} = useContext(AppContext)
 
   const [showMenu, setShowMenu] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -60,9 +60,9 @@ const Navbar = () => {
       
       <div className='flex items-center gap-4'>
         {
-          token
+          token && userData
           ? <div className='flex items-center gap-2 cursor-pointer relative'>
-            <img className='w-8 rounded-full' src={assets.profile_pic} onClick={toggleDropdown} alt="" />
+            <img className='w-8 rounded-full' src={userData.imageUrl} onClick={toggleDropdown} alt="" />
             <img className='w-2.5' src={assets.dropdown_icon} onClick={toggleDropdown} alt="" />
             {dropdownOpen && (
               <div ref={dropdownRef} className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20'>
