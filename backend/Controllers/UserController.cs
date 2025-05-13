@@ -89,7 +89,21 @@ public class UserController : ControllerBase
             return NotFound(new { success = false, message = "User not found" });
         }
 
+        string imageUrl = "";
+        if (dto.ImageUrl != null && dto.ImageUrl.Length > 0)
+        {
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(dto.ImageUrl.FileName, dto.ImageUrl.OpenReadStream()),
+                Folder = "doctor_profiles"
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            imageUrl = uploadResult.SecureUrl.ToString();
+        }
+
         
+
 
         await _context.SaveChangesAsync();
         return Ok(new { success = true, message = "Profile updated", user });
