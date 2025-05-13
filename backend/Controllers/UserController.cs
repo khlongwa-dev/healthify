@@ -24,40 +24,39 @@ public class UserController : ControllerBase
         _jwt = jwt;
     }
 
-    [HttpPost("profile")]
-    public async Task<IActionResult> GetUserProfile([FromBody] Dictionary<string, int> body)
+    [HttpGet("get-profile")]
+    public async Task<IActionResult> GetUserProfile()
     {
-        if (!body.TryGetValue("userId", out int userId))
+        var token = Request.Headers["token"].FirstOrDefault();
+        if (string.IsNullOrEmpty(token))
         {
-            return BadRequest(new { success = false, message = "Missing user ID." });
+            return Unauthorized(new { success = false, message = "Token is missing" });
         }
 
-        var user = await _context.Users.FirstOrDefaultAsync(d => d.Id == userId);
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            return Unauthorized(new { success = false, message = "User ID claim not found" });
+        }
+
+        if (!int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid user ID in token" });
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
-            return NotFound(new { success = false, message = "User not found." });
+            return NotFound(new { success = false, message = "User not found" });
         }
-
-        await _context.SaveChangesAsync();
 
         return Ok(new { success = true, user });
     }
 
-    [HttpPost("update-profile")]
-    public async Task<IActionResult> UpdateUserProfile([FromBody] UserUpdateDto dto)
-    {
-        string imageUrl = "";
-        if (dto.Image != null && dto.Image.Length > 0)
-        {
-            var uploadParams = new ImageUploadParams
-            {
-                File = new FileDescription(dto.Image.FileName, dto.Image.OpenReadStream()),
-                Folder = "doctor_profiles"
-            };
-
-            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-            imageUrl = uploadResult.SecureUrl.ToString();
-        }
-        return Ok(new { success = true, message = "Doctor availability updated.", user });
-    }
 }
