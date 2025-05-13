@@ -102,11 +102,18 @@ public class UserController : ControllerBase
             imageUrl = uploadResult.SecureUrl.ToString();
         }
 
-        
+        user.Name = dto.Name;
+        user.Phone = dto.Phone;
+        user.AddressLine1 = dto.AddressLine1;
+        user.AddressLine2 = dto.AddressLine2;
+        user.Gender = dto.Gender;
+        user.DoB = dto.DoB;
 
+        if (!string.IsNullOrEmpty(imageUrl)) {
+            user.ImageUrl = imageUrl;
+        }
 
         await _context.SaveChangesAsync();
         return Ok(new { success = true, message = "Profile updated", user });
     }
-
 }
