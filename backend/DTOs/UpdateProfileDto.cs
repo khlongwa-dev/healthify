@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.DTOs
 {
-    public class UpdateUserProfileDto
+    public class UpdateProfileDto
     {
         [Required]
         public required string Name { get; set; }

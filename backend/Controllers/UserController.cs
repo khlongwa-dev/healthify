@@ -59,4 +59,24 @@ public class UserController : ControllerBase
         return Ok(new { success = true, user });
     }
 
+    [HttpPost("update-profile")]
+    public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto dto)
+    {
+        var token = Request.Headers["token"].FirstOrDefault();
+       
+        if (string.IsNullOrEmpty(token)) return Unauthorized(new { success = false, message = "Invalid token" });
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        
+
+
+        await _context.SaveChangesAsync();
+        return Ok(new { success = true, message = "Profile updated", user });
+    }
+
 }
