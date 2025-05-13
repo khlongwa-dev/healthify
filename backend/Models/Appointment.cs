@@ -11,7 +11,7 @@ namespace backend.Models
         public required Doctor Doctor { get; set; }
         public required User User { get; set; }
 
-        public int Appointments { get; set; } // number of appointments
+        public int DoctorFee { get; set; } // number of appointments
         public required DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
         public bool Cancelled { get; set; } = false;
         public bool Paid { get; set; } = false;

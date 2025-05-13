@@ -14,7 +14,7 @@ namespace backend.DTOs
         public required string Gender { get; set; }
 
         [Required]
-        public DateOnly DoB { get; set; }
+        public required string DoB { get; set; }
 
         // Optional image (form field name must match)
         public IFormFile? ImageUrl { get; set; }

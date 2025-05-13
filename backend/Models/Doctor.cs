@@ -21,5 +21,6 @@ namespace backend.Models
         public required string AddressLine1 { get; set; }
         public required string AddressLine2 { get; set; }
         public  DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+        public Dictionary<string, List<string>> AvailableSlots { get; set; } = new();
     }
 }

@@ -15,7 +15,7 @@ namespace backend.Models
         public string AddressLine1 { get; set; } = "";
         public string AddressLine2 { get; set; } = "";
         public string Gender { get; set; } = "Not Selected";
-        public  DateOnly DoB { get; set; }
+        public string DoB { get; set; } = "yyyy-mm-dd";
         public string Phone { get; set; } = "+0 00 000 0000";
     }
 }
