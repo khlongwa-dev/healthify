@@ -83,12 +83,13 @@ public class UserController : ControllerBase
             return Unauthorized(new { success = false, message = "Invalid user ID in token" });
         }
 
-       
-
-        if (!string.IsNullOrEmpty(imageUrl)) {
-            user.ImageUrl = imageUrl;
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return NotFound(new { success = false, message = "User not found" });
         }
 
+        
 
         await _context.SaveChangesAsync();
         return Ok(new { success = true, message = "Profile updated", user });
