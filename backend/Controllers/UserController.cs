@@ -291,5 +291,13 @@ public class UserController : ControllerBase
             .Include(a => a.Doctor)
             .Include(a => a.User)
             .FirstOrDefaultAsync(a => a.Id == appointmentId && a.UserId == userId);
+        
+        if (appointment == null)
+        {
+            return NotFound(new { success = false, message = "Appointment not found or does not belong to the user." });
+        }
+
+        //cancel appointment
+        appointment.Cancelled = true;
     }
 }
