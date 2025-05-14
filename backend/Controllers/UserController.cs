@@ -187,4 +187,71 @@ public class UserController : ControllerBase
 
         return Ok(new { success = true, message = "Appointment booked successfully" });
     }
+
+    [HttpGet("get-appointments")]
+    public async Task<IActionResult> GetUserAppointments()
+    {
+        var token = Request.Headers["token"].FirstOrDefault();
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized(new { success = false, message = "Token is missing" });
+        }
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid user ID in token" });
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return NotFound(new { success = false, message = "User not found" });
+        }
+
+        var appointments = await _context.Appointments
+            .Where(a => a.UserId == userId)
+            .Include(a => a.Doctor)
+            .Include(a => a.User)
+            .Select(a => new
+            {
+                a.Id,
+                a.SlotDate,
+                a.SlotTime,
+                a.DoctorFee,
+                a.Cancelled,
+                a.Paid,
+                a.IsCompleted,
+                a.Date,
+                Doctor = new
+                {
+                    a.Doctor.Id,
+                    a.Doctor.Name,
+                    a.Doctor.AddressLine1,
+                    a.Doctor.AddressLine2,
+                    a.Doctor.Specialty,
+                    a.Doctor.ImageUrl
+                },
+                User = new
+                {
+                    a.User.Id,
+                    a.User.Name,
+                    a.User.Email
+                }
+            })
+            .ToListAsync();
+
+        return Ok(new
+        {
+            success = true,
+            appointments
+        });
+    }
+
 }
