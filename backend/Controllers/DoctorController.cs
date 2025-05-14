@@ -56,4 +56,43 @@ public class DoctorController : ControllerBase
             doctors = result
         });
     }
+
+    [HttpGet("appointments")]
+    public async Task<IActionResult> GetUserAppointments()
+    {
+        var token = Request.Headers["dToken"].FirstOrDefault();
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized(new { success = false, message = "Token is missing" });
+        }
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int docId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid user ID in token" });
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(a => a.Id == docId);
+        if (user == null)
+        {
+            return NotFound(new { success = false, message = "Doctor not found" });
+        }
+
+        var appointments = await _context.Appointments
+            .Where(a => a.DoctorId == docId)
+            .Include(a => a.User)
+            .ToListAsync();
+
+        return Ok(new
+        {
+            success = true,
+            appointments
+        });
+    }
 }

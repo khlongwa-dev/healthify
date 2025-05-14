@@ -3,9 +3,7 @@ using backend.Models;
 using backend.Data;
 using backend.DTOs;
 using backend.Services;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace backend.Controllers;
 
@@ -37,7 +35,7 @@ public class AuthenticationController : ControllerBase
         {
             success = true,
             message = "Login successful.",
-            token = token
+            token
         });
     }
 
@@ -56,7 +54,7 @@ public class AuthenticationController : ControllerBase
         {
             success = true,
             message = "Login successful.",
-            token = token
+            token
         });
     }
 
