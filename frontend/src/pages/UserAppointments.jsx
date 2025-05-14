@@ -45,11 +45,17 @@ const UserAppointments = () => {
     }
   }
 
+  const payOnline = async () => {
+    toast.warn("Online payment currently not available.")
+  }
+
   useEffect(()=>{
     if (token) {
       getUserAppointments()
     }
   }, [token])
+
+
   return (
     <div>
       <p className='pb-3 mt-12 font-medium text-zinc-700 border-b'>My appointments</p>
@@ -69,7 +75,7 @@ const UserAppointments = () => {
             </div>
             <div></div>
             <div className='flex flex-col gap-2 justify-end'>
-              {!item.cancelled && <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>}
+              {!item.cancelled && <button onClick={()=>payOnline()} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>}
               {!item.cancelled && <button onClick={()=>cancelAppointment(item.id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>Cancel appointment</button>}
               {item.cancelled && <button className='sm:min-w-48 py-2 border border-red-500 rounded text-red-500'>Appointment cancelled</button>}
             </div>
