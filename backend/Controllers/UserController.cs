@@ -299,5 +299,11 @@ public class UserController : ControllerBase
 
         //cancel appointment
         appointment.Cancelled = true;
+
+        // find a booked slot
+        var bookedSlot = await _context.BookedSlots.FirstOrDefaultAsync(bs =>
+            bs.DoctorId == appointment.DoctorId &&
+            bs.SlotDate == appointment.SlotDate &&
+            bs.SlotTime == appointment.SlotTime);
     }
 }
