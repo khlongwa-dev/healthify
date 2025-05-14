@@ -311,5 +311,9 @@ public class UserController : ControllerBase
         {
             _context.BookedSlots.Remove(bookedSlot);
         }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Appointment cancelled successfully." });
     }
 }
