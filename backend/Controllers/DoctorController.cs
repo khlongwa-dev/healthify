@@ -87,6 +87,7 @@ public class DoctorController : ControllerBase
         var appointments = await _context.Appointments
             .Where(a => a.DoctorId == docId)
             .Include(a => a.User)
+            .OrderByDescending(a => a.Id)
             .ToListAsync();
 
         return Ok(new
