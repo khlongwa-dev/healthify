@@ -2,10 +2,11 @@ import React from 'react'
 import { useContext } from 'react'
 import { AdminContext } from '../../context/AdminContext'
 import { useEffect } from 'react'
+import { AppContext } from '../../context/AppContext'
 
 const AllAppointments = () => {
   const {aToken, appointments, getAllAppointments} = useContext(AdminContext)
-
+  const {calculateAge} = useContext(AppContext)
   useEffect(()=>{
     if (aToken) {
       getAllAppointments()
@@ -31,6 +32,8 @@ const AllAppointments = () => {
               <div className='flex items-center gap-2'>
                 <img className='w-8 rounded-full' src={item.user.imageUrl} alt="" /> <p>{item.user.name}</p>
               </div>
+              <p className='max-sm:hidden'>{calculateAge(item.user.doB)}</p>
+              <p>{item.slotDate}, {item.</p>
             </div>
           ))}
       </div>
