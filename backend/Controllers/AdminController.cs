@@ -255,15 +255,33 @@ public class AdminController : ControllerBase
             return NotFound(new { success = false, message = "Admin not found" });
         }
 
-        var appointments = await _context.Appointments
-            .Include(a => a.Doctor)
+        // Get number of doctors
+        var doctorCount = await _context.Doctors.CountAsync();
+
+        // Get number of appointments
+        var appointmentCount = await _context.Appointments.CountAsync();
+
+        // Get number of users
+        var userCount = await _context.Users.CountAsync();
+
+        // Get the latest 5 appointments (assuming higher ID = newer)
+        var latestAppointments = await _context.Appointments
             .Include(a => a.User)
+            .Include(a => a.Doctor)
+            .OrderByDescending(a => a.Id)
+            .Take(5)
             .ToListAsync();
 
         return Ok(new
         {
             success = true,
-            appointments
+            dashdata = new
+            {
+                doctorCount,
+                appointmentCount,
+                userCount,
+                latestAppointments
+            }
         });
     }
 }
