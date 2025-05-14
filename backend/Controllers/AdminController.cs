@@ -271,7 +271,7 @@ public class AdminController : ControllerBase
             .OrderByDescending(a => a.Id)
             .Take(5)
             .ToListAsync();
-
+    
         return Ok(new
         {
             success = true,
@@ -280,7 +280,7 @@ public class AdminController : ControllerBase
                 doctorCount,
                 appointmentCount,
                 userCount,
-                latestAppointments
+                latestAppointments,
             }
         });
     }
