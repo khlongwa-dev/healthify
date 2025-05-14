@@ -13,9 +13,9 @@ const AllAppointments = () => {
   }, [aToken])
 
   return (
-    <div>
-      <p>All appoinments</p>
-      <div>
+    <div className='w-full max-w-6xl m-5'>
+      <p className='mb-3 text-lg font-medium'>All appoinments</p>
+      <div className='bg-white border rounded text-sm max-h-[80vh] min-h-[60vh] overflow-y-scroll'>
         <div>
           <p>#</p>
           <p>Patient</p>
