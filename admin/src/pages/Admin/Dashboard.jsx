@@ -50,8 +50,17 @@ const Dashboard = () => {
         <div className='pt-4 border border-t-0'>
           {
             dashData.latestAppointments.map((item, index)=>(
-              <div key={index}>
-                <img src={item.doctors.imageUrl} alt="" />
+              <div className='flex items-center px-6 py-3 hover:bg-gray-100' key={index}>
+                <img className='rounded-full w-10' src={item.doctor.imageUrl} alt="" />
+                <div className='flex-1 text-sm'>
+                  <p className='text-gray-800 font-medium'>{item.doctor.name}</p>
+                  <p className='text-gray-600'>{item.slotDate}</p>
+                </div>
+                {
+                  item.cancelled
+                  ? <p className='text-red-400 text-xs font-medium'>Cancelled</p>
+                  : <img onClick={()=>cancelAppointment(item.id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+                }
               </div>
             ))
           }
