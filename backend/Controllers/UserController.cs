@@ -254,4 +254,44 @@ public class UserController : ControllerBase
         });
     }
 
+    [HttpPost("cancel-appointment")]
+    public async Task<IActionResult> CancellAppointment([FromBody] Dictionary<string, int> body)
+    {
+        var token = Request.Headers["token"].FirstOrDefault();
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized(new { success = false, message = "Token is missing" });
+        }
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid user ID in token" });
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return NotFound(new { success = false, message = "User not found" });
+        }
+
+        if (!body.TryGetValue("appointmentId", out int appointmentId))
+        {
+            return BadRequest(new { success = false, message = "Missing appointment ID." });
+        }
+
+        // use appointmentId to find appointment and negate the value of Cancelled which is default false
+
+        // find the doctor Id from the appointment and extract the doctor from doctors
+
+        // from doctor (BookedSlots) remove appointment.SlotTime and save the doctor
+
+    }
+
 }
