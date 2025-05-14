@@ -1,7 +1,6 @@
 import React, { createContext, useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { headers } from 'next/headers'
 
 export const AdminContext = createContext()
 
@@ -50,6 +49,7 @@ const AdminContextProvider = (props) => {
             const {data} = await axios.get(backendUrl + 'api/admin/all-appointments', {headers:{aToken}})
             if (data.success) {
                 setAppointments(data.appointments)
+                console.log(data.appointments)
             } else {
                 toast.error(data.message)
             }
@@ -63,7 +63,8 @@ const AdminContextProvider = (props) => {
         aToken, setAToken,
         backendUrl, doctors,
         getAllDoctors, changeAvailability,
-        aToken, setAppointments,
+        setAppointments,
+        appointments,
         getAllAppointments
     }
 
