@@ -125,4 +125,43 @@ public class AdminController : ControllerBase
 
         return Ok(new { success = true, message = "Doctor availability updated.", availability = doctor.Available });
     }
+
+    [HttpGet("all-appointments")]
+    public async Task<IActionResult> GetAllAppointments()
+    {
+        var token = Request.Headers["aToken"].FirstOrDefault();
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized(new { success = false, message = "Token is missing" });
+        }
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int adminId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid admin ID in token" });
+        }
+
+        var admin = await _context.Admins.FirstOrDefaultAsync(u => u.Id == adminId);
+        if (admin == null)
+        {
+            return NotFound(new { success = false, message = "Admin not found" });
+        }
+
+        var appointments = await _context.Appointments
+            .Include(a => a.Doctor)
+            .Include(a => a.User)
+            .ToListAsync();
+
+        return Ok(new
+        {
+            success = true,
+            appointments
+        });
+    }
 }
