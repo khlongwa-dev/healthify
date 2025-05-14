@@ -305,5 +305,11 @@ public class UserController : ControllerBase
             bs.DoctorId == appointment.DoctorId &&
             bs.SlotDate == appointment.SlotDate &&
             bs.SlotTime == appointment.SlotTime);
+        
+        // remove booked slot
+        if (bookedSlot != null)
+        {
+            _context.BookedSlots.Remove(bookedSlot);
+        }
     }
 }
