@@ -286,12 +286,10 @@ public class UserController : ControllerBase
             return BadRequest(new { success = false, message = "Missing appointment ID." });
         }
 
-        // use appointmentId to find appointment and negate the value of Cancelled which is default false
-
-        // find the doctor Id from the appointment and extract the doctor from doctors
-
-        // from doctor (BookedSlots) remove appointment.SlotTime and save the doctor
-
+        // find the appointment
+        var appointment = await _context.Appointments
+            .Include(a => a.Doctor)
+            .Include(a => a.User)
+            .FirstOrDefaultAsync(a => a.Id == appointmentId && a.UserId == userId);
     }
-
 }
