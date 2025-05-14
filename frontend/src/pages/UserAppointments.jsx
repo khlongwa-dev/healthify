@@ -4,7 +4,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 
 const UserAppointments = () => {
-  const { backendUrl, token } = useContext(AppContext)
+  const { backendUrl, token, getDoctorsData } = useContext(AppContext)
   const [appointments, setAppointments] = useState([])
   const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   
@@ -20,6 +20,7 @@ const UserAppointments = () => {
 
       if (data.success) {
         setAppointments(data.appointments.reverse())
+        getDoctorsData()
         console.log(data.appointments)
       }
     } catch (error) {
