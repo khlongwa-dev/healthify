@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { AdminContext } from '../../context/AdminContext'
 import { useEffect } from 'react'
 import { AppContext } from '../../context/AppContext'
+import { assets } from '../../assets/assets'
 
 const AllAppointments = () => {
   const {aToken, appointments, getAllAppointments} = useContext(AdminContext)
@@ -38,6 +39,11 @@ const AllAppointments = () => {
                 <img className='w-8 rounded-full bg-gray-200' src={item.doctor.imageUrl} alt="" /> <p>{item.doctor.name}</p>
               </div>
               <p>{currency}{item.doctorFee}</p>
+              {
+                item.cancelled
+                ? <p className='text-red-400 text-xs font-medium'>Cancelled</p>
+                : <img className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+              }
             </div>
           ))}
       </div>
