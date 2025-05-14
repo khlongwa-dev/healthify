@@ -85,9 +85,10 @@ const AdminContextProvider = (props) => {
 
             if (data.success) {
                 setDashData(data.dashdata)
+                console.log(data.dashdata)
             }
         } catch (error) {
-            
+            toast.error(error.message)
         }
     }
 
@@ -98,7 +99,8 @@ const AdminContextProvider = (props) => {
         setAppointments,
         appointments,
         getAllAppointments,
-        cancelAppointment
+        cancelAppointment,
+        dashData, getDashData
     }
 
     return (
