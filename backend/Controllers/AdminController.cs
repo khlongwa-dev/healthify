@@ -164,4 +164,67 @@ public class AdminController : ControllerBase
             appointments
         });
     }
+
+    [HttpPost("cancel-appointment")]
+    public async Task<IActionResult> CancelAppointment([FromBody] Dictionary<string, int> body)
+    {
+        var token = Request.Headers["token"].FirstOrDefault();
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized(new { success = false, message = "Token is missing" });
+        }
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int adminId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid user ID in token" });
+        }
+
+        var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Id == adminId);
+        if (admin == null)
+        {
+            return NotFound(new { success = false, message = "User not found" });
+        }
+
+        if (!body.TryGetValue("appointmentId", out int appointmentId))
+        {
+            return BadRequest(new { success = false, message = "Missing appointment ID." });
+        }
+
+        // find the appointment
+        var appointment = await _context.Appointments
+            .Include(a => a.Doctor)
+            .Include(a => a.User)
+            .FirstOrDefaultAsync(a => a.Id == appointmentId && a.UserId == usId);
+        
+        if (appointment == null)
+        {
+            return NotFound(new { success = false, message = "Appointment not found or does not belong to the user." });
+        }
+
+        //cancel appointment
+        appointment.Cancelled = true;
+
+        // find a booked slot
+        var bookedSlot = await _context.BookedSlots.FirstOrDefaultAsync(bs =>
+            bs.DoctorId == appointment.DoctorId &&
+            bs.SlotDate == appointment.SlotDate &&
+            bs.SlotTime == appointment.SlotTime);
+        
+        // remove booked slot
+        if (bookedSlot != null)
+        {
+            _context.BookedSlots.Remove(bookedSlot);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Appointment cancelled successfully." });
+    }
 }
