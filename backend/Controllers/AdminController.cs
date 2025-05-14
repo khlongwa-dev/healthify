@@ -168,7 +168,7 @@ public class AdminController : ControllerBase
     [HttpPost("cancel-appointment")]
     public async Task<IActionResult> CancelAppointment([FromBody] Dictionary<string, int> body)
     {
-        var token = Request.Headers["token"].FirstOrDefault();
+        var token = Request.Headers["aToken"].FirstOrDefault();
         if (string.IsNullOrEmpty(token))
         {
             return Unauthorized(new { success = false, message = "Token is missing" });
@@ -189,7 +189,7 @@ public class AdminController : ControllerBase
         var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Id == adminId);
         if (admin == null)
         {
-            return NotFound(new { success = false, message = "User not found" });
+            return NotFound(new { success = false, message = "Admin not found" });
         }
 
         if (!body.TryGetValue("appointmentId", out int appointmentId))
@@ -201,7 +201,7 @@ public class AdminController : ControllerBase
         var appointment = await _context.Appointments
             .Include(a => a.Doctor)
             .Include(a => a.User)
-            .FirstOrDefaultAsync(a => a.Id == appointmentId && a.UserId == usId);
+            .FirstOrDefaultAsync(a => a.Id == appointmentId);
         
         if (appointment == null)
         {
