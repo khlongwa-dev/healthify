@@ -75,13 +75,34 @@ public class AdminController : ControllerBase
     public async Task<IActionResult> GetAllDoctors()
     {
         var doctors = await _context.Doctors
-            .Include(d => d.BookedSlots)
-            .ToListAsync();
+        .Include(d => d.BookedSlots)
+        .ToListAsync();
+
+        var result = doctors.Select(doctor => new
+        {
+            doctor.Id,
+            doctor.Name,
+            doctor.Email,
+            doctor.Specialty,
+            doctor.Degree,
+            doctor.Experience,
+            doctor.Fees,
+            doctor.About,
+            doctor.ImageUrl,
+            doctor.AddressLine1,
+            doctor.AddressLine2,
+            BookedSlots = doctor.BookedSlots
+                .GroupBy(bs => bs.SlotDate)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(bs => bs.SlotTime).ToList()
+                )
+        });
 
         return Ok(new
         {
             success = true,
-            doctors
+            doctors = result
         });
     }
 
