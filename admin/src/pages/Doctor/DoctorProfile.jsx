@@ -45,13 +45,13 @@ const DoctorProfile = () => {
   return docData && (
     <div>
 
-      <div>
+      <div className='flex flex-col gap-4 m-5'>
         <div>
-          <img src={docData.imageUrl} alt="" />
+          <img className='bg-primary/80 w-full sm:max-w-64 rounded-lg' src={docData.imageUrl} alt="" />
         </div>
 
         {/* ------- doc info name, degree, experience -------- */}
-        <div>
+        <div className='flex-1 border border-stone-100 rounded-lg p-8 py-7 bg-white'>
           <p>{loadDoctorProfileData.name}</p>
           <div>
             <p>{docData.degree} - {docData.specialty}</p>
