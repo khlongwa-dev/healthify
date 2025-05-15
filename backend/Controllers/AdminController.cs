@@ -84,6 +84,7 @@ public class AdminController : ControllerBase
             doctor.Name,
             doctor.Email,
             doctor.Specialty,
+            doctor.Available,
             doctor.Degree,
             doctor.Experience,
             doctor.Fees,
