@@ -2,19 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { useContext } from 'react'
 import { DoctorContext } from '../../context/DoctorContext'
 import { AppContext } from '../../context/AppContext'
-
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 const DoctorProfile = () => {
-  const {dToken, docData, setDocData, loadDoctorProfileData} = useContext(DoctorContext)
+  const {dToken, docData, backendUrl, setDocData, loadDoctorProfileData} = useContext(DoctorContext)
   const [isEdit, setIsEdit] = useState(false)
-  const [image, setImage] = useState(false)
   const {currency} = useContext(AppContext)
 
 
   const updateDoctorProfileData = async () => {
     try {
       const formData = new FormData()
-      formData.append('Fees', docData.fee)
+
+      formData.append('Fees', parseInt(docData.fees))
       formData.append('Available', docData.available)
       formData.append('AddressLine1', docData.addressLine1)
       formData.append('AddressLine2', docData.addressLine2)
@@ -39,7 +40,8 @@ const DoctorProfile = () => {
     if(dToken) {
       loadDoctorProfileData()
     }
-  })
+  }, [dToken])
+
   return docData && (
     <div>
 
@@ -50,7 +52,7 @@ const DoctorProfile = () => {
 
         {/* ------- doc info name, degree, experience -------- */}
         <div className='flex-1 border border-stone-100 rounded-lg p-8 py-7 bg-white'>
-          <p className='flex items-center gap-2 text-3xl font-medium text-gray-700'>{loadDoctorProfileData.name}</p>
+          <p className='flex items-center gap-2 text-3xl font-medium text-gray-700'>{docData.name}</p>
           <div className='flex items-center gap-2 mt-1 text-gray-600'>
             <p>{docData.degree} - {docData.specialty}</p>
             <button className='py-0.5 px-2 border text-xs rounded-full'>{docData.experience}</button>
@@ -78,7 +80,7 @@ const DoctorProfile = () => {
             <label htmlFor="">Available</label>
           </div>
             {
-              isEdit ? <button onClick={()=>updateDoctorProfileData} className='px-4 py-1 border border-primary text-sm rounded-full mt-5 hover:bg-primary hover:text-white transition-all'>Save</button>
+              isEdit ? <button onClick={updateDoctorProfileData} className='px-4 py-1 border border-primary text-sm rounded-full mt-5 hover:bg-primary hover:text-white transition-all'>Save</button>
               :<button onClick={()=>setIsEdit(true)} className='px-4 py-1 border border-primary text-sm rounded-full mt-5 hover:bg-primary hover:text-white transition-all'>Edit</button>
             }
         </div>
