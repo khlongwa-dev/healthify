@@ -65,6 +65,7 @@ const DoctorContextProvider = (props) => {
 
             if (data.success) {
                 setDashData(data.dashdata)
+                console.log(data.dashdata)
             } else {
                 toast.error(data.message)
             }
