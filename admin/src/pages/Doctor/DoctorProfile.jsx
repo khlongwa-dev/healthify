@@ -14,21 +14,18 @@ const DoctorProfile = () => {
   const updateDoctorProfileData = async () => {
     try {
       const formData = new FormData()
-      formData.append('Phone', userData.phone)
-      formData.append('Name', userData.name)
-      formData.append('AddressLine1', userData.addressLine1)
-      formData.append('AddressLine2', userData.addressLine2)
-      formData.append('Gender', userData.gender)
-      formData.append('DoB', userData.doB)
+      formData.append('Fees', docData.fee)
+      formData.append('Available', docData.available)
+      formData.append('AddressLine1', docData.addressLine1)
+      formData.append('AddressLine2', docData.addressLine2)
+
       
-      image && formData.append('ImageUrl', image)
-      const {data} = await axios.post(backendUrl + 'api/doctor/update-profile', formData, {headers:{token}})
+      const {data} = await axios.post(backendUrl + 'api/doctor/update-profile', formData, {headers:{dToken}})
 
       if (data.success) {
         toast.success(data.message)
         await loadDoctorProfileData()
         setIsEdit(false)
-        setImage(false)
       } else {
         toast.error(data.message)
       }
@@ -77,11 +74,13 @@ const DoctorProfile = () => {
           </div>
 
           <div className='flex gap-1 pt-2'>
-            <input checked={docData.available} type="checkbox" />
+            <input  onChange={()=> isEdit && setDocData(prev => ({...prev, available: !prev.available}))} checked={docData.available} type="checkbox" />
             <label htmlFor="">Available</label>
           </div>
-
-          <button onClick={()=>setIsEdit(true)} className='px-4 py-1 border border-primary text-sm rounded-full mt-5 hover:bg-primary hover:text-white transition-all'>Edit</button>
+            {
+              isEdit ? <button onClick={()=>updateDoctorProfileData} className='px-4 py-1 border border-primary text-sm rounded-full mt-5 hover:bg-primary hover:text-white transition-all'>Save</button>
+              :<button onClick={()=>setIsEdit(true)} className='px-4 py-1 border border-primary text-sm rounded-full mt-5 hover:bg-primary hover:text-white transition-all'>Edit</button>
+            }
         </div>
       </div>
 
