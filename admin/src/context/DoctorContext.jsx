@@ -40,6 +40,21 @@ const DoctorContextProvider = (props) => {
             toast.error(error.message)
         }
     }
+
+    const cancelAppointment = async (appointmentId) => {
+        try {
+            
+            const {data} = await axios.get(backendUrl + 'api/doctor/cancel-appointment', {appointmentId}, {headers:{dToken}})
+            if (data.success) {
+                toast.success(data.message)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
     
     const value = {
         dToken, setDToken,
