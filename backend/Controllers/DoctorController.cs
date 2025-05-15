@@ -139,7 +139,7 @@ public class DoctorController : ControllerBase
         appointment.IsCompleted = true;
         await _context.SaveChangesAsync();
 
-        return Ok(new { success = true, message = "Appointment completed."});
+        return Ok(new { success = true, message = "Appointment completed." });
     }
 
     [HttpPost("cancel-appointment")]
@@ -179,7 +179,7 @@ public class DoctorController : ControllerBase
             .Include(a => a.Doctor)
             .Include(a => a.User)
             .FirstOrDefaultAsync(a => a.Id == appointmentId);
-        
+
         if (appointment == null)
         {
             return NotFound(new { success = false, message = "Appointment not found or does not belong to the user." });
@@ -193,7 +193,7 @@ public class DoctorController : ControllerBase
             bs.DoctorId == appointment.DoctorId &&
             bs.SlotDate == appointment.SlotDate &&
             bs.SlotTime == appointment.SlotTime);
-        
+
         // remove booked slot
         if (bookedSlot != null)
         {
@@ -257,6 +257,41 @@ public class DoctorController : ControllerBase
                 latestAppointments
             }
         });
+    }
+    
+    [HttpGet("get-profile")]
+    public async Task<IActionResult> GetDoctorProfile()
+    {
+        var token = Request.Headers["token"].FirstOrDefault();
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized(new { success = false, message = "Token is missing" });
+        }
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            return Unauthorized(new { success = false, message = "Doctor ID claim not found" });
+        }
+
+        if (!int.TryParse(userIdClaim.Value, out int docId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid doctor ID in token" });
+        }
+
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
+        if (doctor == null)
+        {
+            return NotFound(new { success = false, message = "User not found" });
+        }
+
+        return Ok(new { success = true, doctor });
     }
 
 }
