@@ -11,6 +11,7 @@ const DoctorContextProvider = (props) => {
 
     const getDoctorAppointments = async () => {
         try {
+            
             const {data} = await axios.get(backendUrl + 'api/doctor/appointments', {headers:{dToken}})
             if (data.success) {
                 setAppointments(data.appointments)
@@ -19,6 +20,7 @@ const DoctorContextProvider = (props) => {
                 toast.error(data.message)
             }
         } catch (error) {
+            console.log("the issue is here dummy")
             console.log(error)
             toast.error(error.message)
         }

@@ -27,7 +27,7 @@ const Login = () => {
                     localStorage.setItem('aToken', data.token)
                     setAToken(data.token)
                     toast.success(data.message)
-                    navigate('/')
+                    navigate('/admin-dashboard')
                 } else {
                     toast.error(data.message)
                 }
