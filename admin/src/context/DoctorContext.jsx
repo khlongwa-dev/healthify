@@ -11,7 +11,7 @@ const DoctorContextProvider = (props) => {
 
     const getDoctorAppointments = async () => {
         try {
-            
+
             const {data} = await axios.get(backendUrl + 'api/doctor/appointments', {headers:{dToken}})
             if (data.success) {
                 setAppointments(data.appointments)
@@ -25,11 +25,27 @@ const DoctorContextProvider = (props) => {
             toast.error(error.message)
         }
     }
+
+    const completeAppointment = async (appointmentId) => {
+        try {
+            
+            const {data} = await axios.get(backendUrl + 'api/doctor/complete-appointment', {appointmentId}, {headers:{dToken}})
+            if (data.success) {
+                toast.success(data.message)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
     
     const value = {
         dToken, setDToken,
         backendUrl, appointments,
-        setAppointments, getDoctorAppointments
+        setAppointments, getDoctorAppointments,
+        completeAppointment
     }
 
     return (
