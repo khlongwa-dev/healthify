@@ -259,10 +259,10 @@ public class DoctorController : ControllerBase
         });
     }
     
-    [HttpGet("get-profile")]
+    [HttpGet("profile")]
     public async Task<IActionResult> GetDoctorProfile()
     {
-        var token = Request.Headers["token"].FirstOrDefault();
+        var token = Request.Headers["dToken"].FirstOrDefault();
         if (string.IsNullOrEmpty(token))
         {
             return Unauthorized(new { success = false, message = "Token is missing" });
