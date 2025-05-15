@@ -78,10 +78,10 @@ public class DoctorController : ControllerBase
             return Unauthorized(new { success = false, message = "Invalid user ID in token" });
         }
 
-        var user = await _context.Users.FirstOrDefaultAsync(a => a.Id == docId);
-        if (user == null)
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
+        if (doctor == null)
         {
-            return NotFound(new { success = false, message = "Doctor not found" });
+            return NotFound(new { success = false, message = "Doctor not found doc " });
         }
 
         var appointments = await _context.Appointments
