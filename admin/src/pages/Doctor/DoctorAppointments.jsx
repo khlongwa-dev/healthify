@@ -7,7 +7,7 @@ import { AppContext } from '../../context/AppContext'
 const DoctorAppointments = () => {
 
   const { dToken, appointments, getDoctorAppointments } = useContext(DoctorContext)
-  const { calculateAge } = useContext(AppContext)
+  const { calculateAge, slotDateFormat, currency } = useContext(AppContext)
 
   useEffect (()=>{
     if(dToken) {
@@ -41,6 +41,8 @@ const DoctorAppointments = () => {
                 </p>
               </div>
               <p>{calculateAge(item.user.doB)}</p>
+              <p>{slotDateFormat(item.slotDate)}, {item.sloTime}</p>
+              <p>{currency}</p>
             </div>
           ))
         }
