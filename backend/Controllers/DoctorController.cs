@@ -258,7 +258,7 @@ public class DoctorController : ControllerBase
             }
         });
     }
-    
+
     [HttpGet("profile")]
     public async Task<IActionResult> GetDoctorProfile()
     {
@@ -292,6 +292,47 @@ public class DoctorController : ControllerBase
         }
 
         return Ok(new { success = true, doctor });
+    }
+    
+    [HttpPost("update-profile")]
+    public async Task<IActionResult> UpdateProfile([FromForm] UpdateDoctorProfileDto dto)
+    {
+        var token = Request.Headers["dToken"].FirstOrDefault();
+       
+        if (string.IsNullOrEmpty(token)) return Unauthorized(new { success = false, message = "Invalid token" });
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            return Unauthorized(new { success = false, message = "User ID claim not found" });
+        }
+
+        if (!int.TryParse(userIdClaim.Value, out int docId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid user ID in token" });
+        }
+
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(u => u.Id == docId);
+        if (doctor == null)
+        {
+            return NotFound(new { success = false, message = "User not found" });
+        }
+
+        
+        doctor.AddressLine1 = dto.AddressLine1;
+        doctor.AddressLine2 = dto.AddressLine2;
+        doctor.Available = dto.Available;
+        doctor.Fees = dto.Fees;
+
+
+        await _context.SaveChangesAsync();
+        return Ok(new { success = true, message = "Profile updated" });
     }
 
 }
