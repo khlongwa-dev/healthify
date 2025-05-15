@@ -37,16 +37,16 @@ const DoctorAppointments = () => {
                 <img className='w-8 rounded-full' src={item.user.imageUrl} alt="" /> <p>{item.user.name}</p>
               </div>
               <div>
-                <p>
+                <p  className='text-sm inline border border-primary px-2 rounded-full'>
                   {item.paid ? 'Online' : 'CASH'}
                 </p>
               </div>
-              <p>{calculateAge(item.user.doB)}</p>
-              <p>{slotDateFormat(item.slotDate)}, {item.sloTime}</p>
+              <p className='max-sm:hidden'>{calculateAge(item.user.doB)}</p>
+              <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
               <p>{currency}{item.doctorFee}</p>
-              <div>
-                <img src={assets.cancel_icon} alt="" />
-                <img src={assets.tick_icon} alt="" />
+              <div className='flex'>
+                <img className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+                <img className='w-10 cursor-pointer' src={assets.tick_icon} alt="" />
               </div>
             </div>
           ))
