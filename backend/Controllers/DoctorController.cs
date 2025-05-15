@@ -204,4 +204,87 @@ public class DoctorController : ControllerBase
 
         return Ok(new { success = true, message = "Appointment cancelled successfully." });
     }
+
+    [HttpGet("dashboard")]
+    public async Task<IActionResult> GetDashboardData()
+    {
+        var token = Request.Headers["dToken"].FirstOrDefault();
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized(new { success = false, message = "Token is missing" });
+        }
+
+        var principal = _jwt.ValidateToken(token);
+        if (principal == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid token" });
+        }
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int docId))
+        {
+            return Unauthorized(new { success = false, message = "Invalid doctor ID in token" });
+        }
+
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
+        if (doctor == null)
+        {
+            return NotFound(new { success = false, message = "Doctor not found" });
+        }
+
+        var appointments = await _context.Appointments
+            .Include(a => a.User)
+            .Where(a => a.DoctorId == docId)
+            .OrderByDescending(a => a.Id)
+            .ToListAsync();
+
+        if (appointments == null || appointments.Count == 0)
+        {
+            return Ok(new
+            {
+                success = true,
+                dashdata = new
+                {
+                    earnings = 0,
+                    patients = 0,
+                    appointmentCount = 0,
+                    latestAppointments = new List<object>()
+                }
+            });
+        }
+
+        decimal earnings = 0;
+        var patientIds = new HashSet<int>();
+
+        foreach (var appointment in appointments)
+        {
+            if (appointment.Paid || appointment.IsCompleted)
+            {
+                earnings += appointment.DoctorFee;
+            }
+
+            if (appointment.User != null)
+            {
+                patientIds.Add(appointment.User.Id);
+            }
+        }
+
+        var appointmentCount = appointments.Count;
+        var latestAppointments = appointments.Take(5);
+
+        var dashdata = new
+        {
+            earnings,
+            patients = patientIds.Count,
+            appointmentCount,
+            latestAppointments
+        };
+
+        return Ok(new
+        {
+            success = true,
+            dashdata
+        });
+    }
+
 }
