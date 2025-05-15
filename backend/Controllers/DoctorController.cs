@@ -229,6 +229,7 @@ public class DoctorController : ControllerBase
         var appointments = await _context.Appointments
             .Where(a => a.DoctorId == docId)
             .Include(a => a.User)
+            .Include(a => a.Doctor)
             .OrderByDescending(a => a.Id)
             .ToListAsync();
 
