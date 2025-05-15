@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { DoctorContext } from '../../context/DoctorContext'
 import { useEffect } from 'react'
 import { AppContext } from '../../context/AppContext'
+import { assets } from '../../assets/assets'
 
 const DoctorAppointments = () => {
 
@@ -30,10 +31,10 @@ const DoctorAppointments = () => {
         </div>
         {
           appointments.map((item, index)=>(
-            <div key={index}>
-              <p>{index+1}</p>
-              <div>
-                <img src={item.user.imageUrl} alt="" /> <p>{item.user.name}</p>
+            <div className='flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base sm:grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b hover:bg-gray-50' key={index}>
+              <p className='max-sm:hidden'>{index+1}</p>
+              <div className='flex items-center gap-2'>
+                <img className='w-8 rounded-full' src={item.user.imageUrl} alt="" /> <p>{item.user.name}</p>
               </div>
               <div>
                 <p>
@@ -42,7 +43,11 @@ const DoctorAppointments = () => {
               </div>
               <p>{calculateAge(item.user.doB)}</p>
               <p>{slotDateFormat(item.slotDate)}, {item.sloTime}</p>
-              <p>{currency}</p>
+              <p>{currency}{item.doctorFee}</p>
+              <div>
+                <img src={assets.cancel_icon} alt="" />
+                <img src={assets.tick_icon} alt="" />
+              </div>
             </div>
           ))
         }
