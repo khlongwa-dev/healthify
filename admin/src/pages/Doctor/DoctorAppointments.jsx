@@ -15,7 +15,18 @@ const DoctorAppointments = () => {
   
   return (
     <div>
-      
+      <p>All Appointments</p>
+      <div>
+        <div>
+          <p>#</p>
+          <p>Patient</p>
+          <p>Payment</p>
+          <p>Age</p>
+          <p>Date & Time</p>
+          <p>Fees</p>
+          <p>Actions</p>
+        </div>
+      </div>
     </div>
   )
 }
