@@ -66,7 +66,6 @@ const DoctorContextProvider = (props) => {
 
             if (data.success) {
                 setDashData(data.dashdata)
-                console.log(data.dashdata)
             } else {
                 toast.error(data.message)
             }
@@ -81,7 +80,6 @@ const DoctorContextProvider = (props) => {
             const {data} = await axios.get(backendUrl + 'api/doctor/profile', {headers:{dToken}})
             if (data.success) {
                 setDocData(data.doctor)
-                console.log(data.doctor)
             } else {
                 toast.error(data.message)
             }
