@@ -81,6 +81,14 @@ namespace backend.Services.Implementations
             return true;
         }
         
-        
+        public async Task<List<Appointment>> GetDoctorAppointmentsByIdAsync(int doctorId)
+        {
+            return await _context.Appointments
+                .Where(a => a.DoctorId == doctorId)
+                .Include(a => a.User)
+                .Include(a => a.Doctor)
+                .OrderByDescending(a => a.Id)
+                .ToListAsync();
+        }
     }
 }
