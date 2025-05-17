@@ -8,6 +8,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using backend.Dependencies;
+using backend.Helpers;
 
 namespace backend.Controllers
 {
@@ -33,63 +34,25 @@ namespace backend.Controllers
             return Ok(new { success = true, user });
         }
 
-        [HttpPost("update-profile")]
-        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto dto)
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserProfileDto dto)
         {
-            var token = Request.Headers["token"].FirstOrDefault();
-
-            if (string.IsNullOrEmpty(token)) return Unauthorized(new { success = false, message = "Invalid token" });
-
-            var principal = _jwt.ValidateToken(token);
-            if (principal == null)
-            {
-                return Unauthorized(new { success = false, message = "Invalid token" });
-            }
-
-            var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-            {
-                return Unauthorized(new { success = false, message = "User ID claim not found" });
-            }
-
-            if (!int.TryParse(userIdClaim.Value, out int userId))
-            {
-                return Unauthorized(new { success = false, message = "Invalid user ID in token" });
-            }
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var user = await _deps.UserService.GetUserFromTokenAsync(token);
             if (user == null)
-            {
-                return NotFound(new { success = false, message = "User not found" });
-            }
+                return Ok(new { success = false, message = "Not authorized." });
 
-            string imageUrl = "";
+            string? imageUrl = null;
             if (dto.ImageUrl != null && dto.ImageUrl.Length > 0)
             {
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(dto.ImageUrl.FileName, dto.ImageUrl.OpenReadStream()),
-                    Folder = "doctor_profiles"
-                };
-
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                imageUrl = uploadResult.SecureUrl.ToString();
+                imageUrl = await CloudinaryHelper.UploadImageAsync(_deps.Cloudinary, dto.ImageUrl, "user_profiles");
             }
 
-            user.Name = dto.Name;
-            user.Phone = dto.Phone;
-            user.AddressLine1 = dto.AddressLine1;
-            user.AddressLine2 = dto.AddressLine2;
-            user.Gender = dto.Gender;
-            user.DoB = dto.DoB;
+            var updated = await _deps.UserService.UpdateProfileAsync(user.Id, dto, imageUrl);
+            if (!updated)
+                Ok(new { success = false, message = "Failed to update profile." });
 
-            if (!string.IsNullOrEmpty(imageUrl))
-            {
-                user.ImageUrl = imageUrl;
-            }
-
-            await _context.SaveChangesAsync();
-            return Ok(new { success = true, message = "Profile updated", user });
+            return Ok(new { success = true, message = "Profile updated successfully." }); ;
         }
 
         [HttpPost("book-appointment")]
