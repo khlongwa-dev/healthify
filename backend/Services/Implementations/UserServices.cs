@@ -74,6 +74,13 @@ namespace backend.Services.Implementations
                 .ToListAsync();
         }
 
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            var users = await _context.Users.ToListAsync();
+
+            return users;
+        }
+
         
     }
 }
