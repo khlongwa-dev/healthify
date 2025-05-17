@@ -65,6 +65,35 @@ namespace backend.Services.Implementations
         }
 
 
-        
+        public int? ValidateToken(string? token)
+        {
+            if (string.IsNullOrEmpty(token)) return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtKey = _configuration["Jwt:Key"]
+                ?? throw new InvalidOperationException("JWT Key is missing in configuration.");
+
+            var key = Encoding.ASCII.GetBytes(jwtKey);
+
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out _);
+
+                var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier);
+                return userIdClaim != null ? int.Parse(userIdClaim.Value) : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
