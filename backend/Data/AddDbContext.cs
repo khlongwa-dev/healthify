@@ -11,6 +11,7 @@ namespace backend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<UserAppointment> UserAppointments { get; set; }
         public DbSet<BookedSlot> BookedSlots { get; set; } 
     }
 }
