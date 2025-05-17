@@ -21,6 +21,49 @@ namespace backend.Controllers
             _deps = deps;
         }
 
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboardData()
+        {
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var doctor = await _deps.DoctorService.GetDoctorFromTokenAsync(token);
+
+            if (doctor == null)
+                return Ok(new { success = false, message = "Not authorized." });
+
+            var appointments = (await _deps.DoctorService
+                .GetDoctorAppointmentsByIdAsync(doctor.Id))
+                .OrderByDescending(a => a.Id)
+                .ToList();
+
+            var earnings = appointments
+                .Where(a => a.Paid || a.IsCompleted)
+                .Sum(a => a.DoctorFee);
+
+            var patientCount = appointments
+                .Select(a => a.User?.Id)
+                .Where(id => id.HasValue)
+                .Distinct()
+                .Count();
+
+            var latestAppointments = appointments
+                .Take(5);
+
+            var appointmentCount = appointments
+                .Count(a => !a.IsCompleted && !a.Cancelled);
+
+            return Ok(new
+            {
+                success = true,
+                dashdata = new
+                {
+                    earnings,
+                    patientCount,
+                    appointmentCount,
+                    latestAppointments
+                }
+            });
+        }
+
         [HttpGet("get-profile")]
         public async Task<IActionResult> GetDoctorProfile()
         {
@@ -231,59 +274,6 @@ namespace backend.Controllers
             return Ok(new { success = true, message = "Appointment cancelled successfully." });
         }
 
-        [HttpGet("dashboard")]
-        public async Task<IActionResult> GetDashboardData()
-        {
-            var token = Request.Headers["dToken"].FirstOrDefault();
-            if (string.IsNullOrEmpty(token))
-                return Unauthorized(new { success = false, message = "Token is missing" });
-
-            var principal = _jwt.ValidateToken(token);
-            if (principal == null)
-                return Unauthorized(new { success = false, message = "Invalid token" });
-
-            var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int docId))
-                return Unauthorized(new { success = false, message = "Invalid doctor ID in token" });
-
-            // Validate doctor exists
-            bool doctorExists = await _context.Doctors.AnyAsync(d => d.Id == docId);
-            if (!doctorExists)
-                return NotFound(new { success = false, message = "Doctor not found" });
-
-            // Query appointments directly
-            var appointments = await _context.Appointments
-                .Where(a => a.DoctorId == docId)
-                .Include(a => a.User)
-                .Include(a => a.Doctor)
-                .OrderByDescending(a => a.Id)
-                .ToListAsync();
-
-            var earnings = appointments
-                .Where(a => a.Paid || a.IsCompleted)
-                .Sum(a => a.DoctorFee);
-
-            var patientCount = appointments
-                .Select(a => a.User?.Id)
-                .Where(id => id.HasValue)
-                .Distinct()
-                .Count();
-
-            var latestAppointments = appointments
-                .Take(5);
-
-            return Ok(new
-            {
-                success = true,
-                dashdata = new
-                {
-                    earnings,
-                    patients = patientCount,
-                    appointmentCount = appointments.Count,
-                    latestAppointments
-                }
-            });
-        }
-
+        
     }
 }
