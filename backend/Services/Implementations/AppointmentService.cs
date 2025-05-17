@@ -67,7 +67,6 @@ namespace backend.Services.Implementations
             return true;
         }
 
-
         public async Task<bool> CancelAppointmentAsync(int appointmentId, int? callerId, string callerRole)
         {
             var appointment = await _context.Appointments.FindAsync(appointmentId);
@@ -100,7 +99,6 @@ namespace backend.Services.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
-
 
         public async Task<bool> CompleteAppointmentAsync(int appointmentId, int callerId)
         {
@@ -139,6 +137,14 @@ namespace backend.Services.Implementations
             return true;
         }
 
-        
+        public async Task<List<Appointment>> GetAllAppointmentsAsync()
+        {
+            var appointments = await _context.Appointments
+                .Include(a => a.Doctor)
+                .Include(a => a.User)
+                .ToListAsync();
+
+            return appointments;
+        }
     }
 }
