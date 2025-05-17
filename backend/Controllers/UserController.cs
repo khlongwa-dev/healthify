@@ -70,70 +70,21 @@ namespace backend.Controllers
                     : Ok(new { success = false, message = "Doctor not available." });
         }
 
-        [HttpGet("get-appointments")]
-        public async Task<IActionResult> GetUserAppointments()
+        [HttpPut("cancel-appointment")]
+        public async Task<IActionResult> CancelAppointment([FromBody] Dictionary<string, int> body)
         {
-            var token = Request.Headers["token"].FirstOrDefault();
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized(new { success = false, message = "Token is missing" });
-            }
-
-            var principal = _jwt.ValidateToken(token);
-            if (principal == null)
-            {
-                return Unauthorized(new { success = false, message = "Invalid token" });
-            }
-
-            var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
-            {
-                return Unauthorized(new { success = false, message = "Invalid user ID in token" });
-            }
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var user = await _deps.UserService.GetUserFromTokenAsync(token);
             if (user == null)
-            {
-                return NotFound(new { success = false, message = "User not found" });
-            }
+                return Ok(new { success = false, message = "Not authorized." });
 
-            var appointments = await _context.Appointments
-                .Where(a => a.UserId == userId)
-                .Include(a => a.Doctor)
-                .Include(a => a.User)
-                .Select(a => new
-                {
-                    a.Id,
-                    a.SlotDate,
-                    a.SlotTime,
-                    a.DoctorFee,
-                    a.Cancelled,
-                    a.Paid,
-                    a.IsCompleted,
-                    a.Date,
-                    Doctor = new
-                    {
-                        a.Doctor.Id,
-                        a.Doctor.Name,
-                        a.Doctor.AddressLine1,
-                        a.Doctor.AddressLine2,
-                        a.Doctor.Specialty,
-                        a.Doctor.ImageUrl
-                    },
-                    User = new
-                    {
-                        a.User.Id,
-                        a.User.Name,
-                        a.User.Email
-                    }
-                })
-                .ToListAsync();
+            var appointmentId = body.GetValueOrDefault("appointmentId");    
+        
+            bool cancel = await _deps.AppointmentService.CancelAppointmentAsync(appointmentId, user.Id, "User");
 
-            return Ok(new
-            {
-                success = true,
-                appointments
-            });
+            return cancel
+                    ? Ok(new { success = true, message = "Appointment cancelled successfully." }) 
+                    : Ok(new { success = false, message = "Appointment not found." });
         }
 
         [HttpPost("cancel-appointment")]
