@@ -67,7 +67,39 @@ namespace backend.Services.Implementations
             return true;
         }
 
+        public async Task<bool> CancelAppointmentAsync(int appointmentId, int? callerId, string callerRole)
+        {
+            var appointment = await _context.Appointments.FindAsync(appointmentId);
+            var userAppointment = await _context.UserAppointments.FindAsync(appointmentId);
 
-        
+            if (appointment == null || userAppointment == null) return false;
+
+            if (callerRole == "User" && appointment.UserId != callerId)
+                return false;
+
+            if (callerRole == "Doctor" && appointment.DoctorId != callerId)
+                return false;
+
+            if (callerRole == "Admin" && callerId == null)
+                return false;
+
+            appointment.Cancelled = true;
+            userAppointment.Cancelled = true;
+
+
+            var slot = await _context.BookedSlots
+                .FirstOrDefaultAsync(bs =>
+                    bs.DoctorId == appointment.DoctorId &&
+                    bs.SlotDate == appointment.SlotDate &&
+                    bs.SlotTime == appointment.SlotTime);
+
+            if (slot != null)
+                _context.BookedSlots.Remove(slot);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
     }
 }
