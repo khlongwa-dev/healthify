@@ -36,6 +36,11 @@ namespace backend.Services.Implementations
             }
         }
 
+        public async Task<Doctor?> GetDoctorByIdAsync(int id)
+        {
+            return await _context.Doctors.FindAsync(id);
+        }
+
         
     }
 }
