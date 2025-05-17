@@ -65,6 +65,22 @@ namespace backend.Services.Implementations
             return doctors;
         }
 
+        public async Task<bool> ChangeDoctorAvailabilityAsync(int doctorId)
+        {
+            var doctor = await _context.Doctors.FindAsync(doctorId);
+            if (doctor == null) return false;
+
+            var doctors = await _context.Doctors
+                .Include(d => d.BookedSlots)
+                .ToListAsync();
+
+            doctor.Available = !doctor.Available;
+
+            _context.Doctors.Update(doctor);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        
         
     }
 }
