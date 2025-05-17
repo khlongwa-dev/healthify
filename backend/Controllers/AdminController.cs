@@ -112,25 +112,21 @@ namespace backend.Controllers
                         : Ok(new { success = false, message = "Email already exist." });
         }
 
-        
-        [HttpPost("change-availability")]
-        public async Task<IActionResult> ChangeAvailability([FromBody] Dictionary<string, int> body)
+        [HttpPut("change-availability")]
+        public async Task<IActionResult> ChangeDoctorAvailability([FromBody] Dictionary<string, int> body)
         {
-            if (!body.TryGetValue("docId", out int docId))
-            {
-                return BadRequest(new { success = false, message = "Missing doctor ID." });
-            }
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var admin = await _deps.AdminService.GetAdminFromTokenAsync(token);
+            if (admin == null)
+                return Ok(new { success = false, message = "Not authorized." });
 
-            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
-            if (doctor == null)
-            {
-                return NotFound(new { success = false, message = "Doctor not found." });
-            }
+            var doctorId = body.GetValueOrDefault("doctorId");
 
-            doctor.Available = !doctor.Available;
-            await _context.SaveChangesAsync();
+            bool changeDoctorAvailability = await _deps.DoctorService.ChangeDoctorAvailabilityAsync(doctorId);
 
-            return Ok(new { success = true, message = "Doctor availability updated.", availability = doctor.Available });
+            return changeDoctorAvailability
+                    ? Ok(new { success = true, message = "Doctor availability changed." })
+                    : Ok(new { success = false, message = "Doctor not found." });
         }
 
         [HttpGet("all-appointments")]
