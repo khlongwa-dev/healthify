@@ -22,7 +22,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("dashboard")]
-        public async Task<IActionResult> GetAdminDashBoardData()
+        public async Task<IActionResult> GetAdminDashboardData()
         {
             string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
             var admin = await _deps.AdminService.GetAdminFromTokenAsync(token);
@@ -53,6 +53,40 @@ namespace backend.Controllers
                     userCount,
                     latestAppointments,
                 }
+            });
+        }
+
+        [HttpGet("doctors-list")]
+        public async Task<IActionResult> GetDoctorList()
+        {
+            var doctors = await _deps.DoctorService.GetAllDoctorsAsync();
+
+            var result = doctors.Select(doctor => new
+            {
+                doctor.Id,
+                doctor.Name,
+                doctor.Email,
+                doctor.Specialty,
+                doctor.Available,
+                doctor.Degree,
+                doctor.Experience,
+                doctor.Fees,
+                doctor.About,
+                doctor.ImageUrl,
+                doctor.AddressLine1,
+                doctor.AddressLine2,
+                BookedSlots = doctor.BookedSlots
+                    .GroupBy(bs => bs.SlotDate)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(bs => bs.SlotTime).ToList()
+                    )
+            });
+
+            return Ok(new
+            {
+                success = true,
+                doctors = result
             });
         }
 
@@ -103,42 +137,7 @@ namespace backend.Controllers
             });
         }
 
-        [HttpPost("all-doctors")]
-        public async Task<IActionResult> GetAllDoctors()
-        {
-            var doctors = await _context.Doctors
-            .Include(d => d.BookedSlots)
-            .ToListAsync();
-
-            var result = doctors.Select(doctor => new
-            {
-                doctor.Id,
-                doctor.Name,
-                doctor.Email,
-                doctor.Specialty,
-                doctor.Available,
-                doctor.Degree,
-                doctor.Experience,
-                doctor.Fees,
-                doctor.About,
-                doctor.ImageUrl,
-                doctor.AddressLine1,
-                doctor.AddressLine2,
-                BookedSlots = doctor.BookedSlots
-                    .GroupBy(bs => bs.SlotDate)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(bs => bs.SlotTime).ToList()
-                    )
-            });
-
-            return Ok(new
-            {
-                success = true,
-                doctors = result
-            });
-        }
-
+        
         [HttpPost("change-availability")]
         public async Task<IActionResult> ChangeAvailability([FromBody] Dictionary<string, int> body)
         {
