@@ -1,11 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using backend.Models;
-using backend.Data;
 using backend.DTOs;
-using backend.Services;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Microsoft.EntityFrameworkCore;
 using backend.Dependencies;
 
 namespace backend.Controllers
@@ -90,42 +84,6 @@ namespace backend.Controllers
             return Ok(new { success = true, message = "Profile updated successfully." }); ;
         }
 
-        [HttpGet("list")]
-        public async Task<IActionResult> GetDoctorList()
-        {
-            var doctors = await _context.Doctors
-            .Include(d => d.BookedSlots)
-            .ToListAsync();
-
-            var result = doctors.Select(doctor => new
-            {
-                doctor.Id,
-                doctor.Name,
-                doctor.Email,
-                doctor.Specialty,
-                doctor.Available,
-                doctor.Degree,
-                doctor.Experience,
-                doctor.Fees,
-                doctor.About,
-                doctor.ImageUrl,
-                doctor.AddressLine1,
-                doctor.AddressLine2,
-                BookedSlots = doctor.BookedSlots
-                    .GroupBy(bs => bs.SlotDate)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(bs => bs.SlotTime).ToList()
-                    )
-            });
-
-            return Ok(new
-            {
-                success = true,
-                doctors = result
-            });
-        }
-
         [HttpGet("get-appointments")]
         public async Task<IActionResult> GetDoctorAppointments()
         {
@@ -194,7 +152,6 @@ namespace backend.Controllers
             return complete
                     ? Ok(new { success = true, message = "Appointment completed successfully." }) 
                     : Ok(new { success = false, message = "Appointment not found." });
-        }
-        
+        } 
     }
 }
