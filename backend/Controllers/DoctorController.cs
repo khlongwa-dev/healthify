@@ -179,51 +179,22 @@ namespace backend.Controllers
                     : Ok(new { success = false, message = "Appointment not found." });
         }
 
-
-        [HttpPost("complete-appointment")]
+        [HttpPut("complete-appointment")]
         public async Task<IActionResult> CompleteAppointment([FromBody] Dictionary<string, int> body)
         {
-            var token = Request.Headers["dToken"].FirstOrDefault();
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized(new { success = false, message = "Token is missing" });
-            }
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var doctor = await _deps.DoctorService.GetDoctorFromTokenAsync(token);
+            if (doctor == null)
+                return Ok(new { success = false, message = "Not authorized." });
 
-            var principal = _jwt.ValidateToken(token);
-            if (principal == null)
-            {
-                return Unauthorized(new { success = false, message = "Invalid token" });
-            }
+            var appointmentId = body.GetValueOrDefault("appointmentId");    
+        
+            bool complete = await _deps.AppointmentService.CompleteAppointmentAsync(appointmentId, doctor.Id);
 
-            var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int docId))
-            {
-                return Unauthorized(new { success = false, message = "Invalid user ID in token" });
-            }
-
-            var admin = await _context.Doctors.FirstOrDefaultAsync(a => a.Id == docId);
-            if (admin == null)
-            {
-                return NotFound(new { success = false, message = "Admin not found" });
-            }
-
-            if (!body.TryGetValue("appointmentId", out int appointmentId))
-            {
-                return BadRequest(new { success = false, message = "Missing doctor ID." });
-            }
-
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(d => d.Id == appointmentId);
-            if (appointment == null)
-            {
-                return NotFound(new { success = false, message = "Appointment not found." });
-            }
-
-            appointment.IsCompleted = true;
-            await _context.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Appointment completed." });
+            return complete
+                    ? Ok(new { success = true, message = "Appointment completed successfully." }) 
+                    : Ok(new { success = false, message = "Appointment not found." });
         }
-
         
     }
 }
