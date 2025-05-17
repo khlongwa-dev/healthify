@@ -59,13 +59,12 @@ namespace backend.Controllers
         [HttpPost("admin/login")]
         public IActionResult AdminLogin([FromBody] LoginDto dto)
         {
-            var admin = _context.Admins.FirstOrDefault(d => d.Email == dto.Email);
+            var admin = _context.Admins.FirstOrDefault(a => a.Email == dto.Email);
 
             if (admin == null || !BCrypt.Net.BCrypt.Verify(dto.Password, admin.Password))
-
                 return Unauthorized(new { success = false, message = "Invalid email or password." });
 
-            var token = _jwt.GenerateToken(admin);
+            var token = _jwtService.GenerateToken(admin);
 
             return Ok(new
             {
