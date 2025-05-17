@@ -56,5 +56,15 @@ namespace backend.Services.Implementations
             return true;
         }
 
+        public async Task<List<Doctor>> GetAllDoctorsAsync()
+        {
+            var doctors = await _context.Doctors
+                .Include(d => d.BookedSlots)
+                .ToListAsync();
+
+            return doctors;
+        }
+
+        
     }
 }
