@@ -163,6 +163,21 @@ namespace backend.Controllers
                     : Ok(new { success = false, message = "Appointment not found." });
         }
 
+        [HttpPost("clear-appointment")]
+        public async Task<IActionResult> ClearAppointment([FromBody] Dictionary<string, int> body)
+        {
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var admin = await _deps.AdminService.GetAdminFromTokenAsync(token);
+            if (admin == null)
+                return Ok(new { success = false, message = "Not authorized." });
 
+            var appointmentId = body.GetValueOrDefault("appointmentId");    
+        
+            bool clear = await _deps.AppointmentService.ClearAppointmentAsync(appointmentId);
+
+            return clear
+                    ? Ok(new { success = true, message = "Appointment cleared successfully." }) 
+                    : Ok(new { success = false, message = "Appointment not found." });
+        }
     }
 }
