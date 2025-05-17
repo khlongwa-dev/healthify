@@ -8,11 +8,11 @@ namespace backend.Models
         public required string SlotDate { get; set; }
         public required string SlotTime { get; set; }
         
-        public required Doctor Doctor { get; set; }
-        public required User User { get; set; }
+        public Doctor? Doctor { get; set; }
+        public User? User { get; set; }
 
         public int DoctorFee { get; set; }
-        public required DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
         public bool Cancelled { get; set; } = false;
         public bool Paid { get; set; } = false;
         public bool IsCompleted { get; set; } = false;
