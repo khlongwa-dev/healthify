@@ -81,6 +81,17 @@ namespace backend.Services.Implementations
             return users;
         }
 
-        
+        public async Task<bool> ClearUserAppointmentByIdAsync(int appointmentId, int userId)
+        {
+            var userAppointment = await _context.UserAppointments.FindAsync(appointmentId);
+
+            if (userAppointment == null || userAppointment.UserId != userId) return false;
+
+            
+            _context.UserAppointments.Remove(userAppointment);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
