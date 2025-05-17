@@ -1,12 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using backend.Models;
-using backend.Data;
 using backend.DTOs;
-using backend.Services;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 using backend.Dependencies;
 using backend.Helpers;
 
