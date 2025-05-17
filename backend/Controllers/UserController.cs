@@ -58,71 +58,16 @@ namespace backend.Controllers
         [HttpPost("book-appointment")]
         public async Task<IActionResult> BookAppointment([FromBody] BookingAppointmentDto dto)
         {
-            var token = Request.Headers["token"].FirstOrDefault();
-            if (string.IsNullOrEmpty(token))
-                return Unauthorized(new { success = false, message = "Invalid token" });
-
-            var principal = _jwt.ValidateToken(token);
-            if (principal == null)
-                return Unauthorized(new { success = false, message = "Invalid token" });
-
-            var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
-                return Unauthorized(new { success = false, message = "Invalid user ID in token" });
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var user = await _deps.UserService.GetUserFromTokenAsync(token);
             if (user == null)
-                return NotFound(new { success = false, message = "User not found" });
+                return Ok(new { success = false, message = "Not authorized." });
 
-            if (!int.TryParse(dto.DoctorId, out int docId))
-                return BadRequest(new { success = false, message = "Invalid doctor ID format" });
+            bool book = await _deps.AppointmentService.BookAppointmentAsync(dto, user.Id);
 
-            var doctor = await _context.Doctors
-                .Include(d => d.BookedSlots)
-                .FirstOrDefaultAsync(d => d.Id == docId);
-
-            if (doctor == null)
-                return NotFound(new { success = false, message = "Doctor not found" });
-
-            if (!doctor.Available)
-                return BadRequest(new { success = false, message = "Doctor is not available." });
-
-            // Check if slot already booked
-            bool slotExists = doctor.BookedSlots
-                .Any(bs => bs.SlotDate == dto.SlotDate && bs.SlotTime == dto.SlotTime);
-
-            if (slotExists)
-                return BadRequest(new { success = false, message = "Slot not available" });
-
-            // Add new booked slot
-            var bookedSlot = new BookedSlot
-            {
-                DoctorId = doctor.Id,
-                SlotDate = dto.SlotDate,
-                SlotTime = dto.SlotTime
-            };
-            await _context.BookedSlots.AddAsync(bookedSlot);
-
-            // Create appointment
-            var appointment = new Appointment
-            {
-                UserId = userId,
-                DoctorId = doctor.Id,
-                SlotDate = dto.SlotDate,
-                SlotTime = dto.SlotTime,
-                Doctor = doctor,
-                User = user,
-                DoctorFee = doctor.Fees,
-                Date = DateOnly.FromDateTime(DateTime.Today),
-                Cancelled = false,
-                Paid = false,
-                IsCompleted = false
-            };
-
-            await _context.Appointments.AddAsync(appointment);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Appointment booked successfully" });
+            return book
+                    ? Ok(new { success = true, message = "Appointment booked successfully." }) 
+                    : Ok(new { success = false, message = "Doctor not available." });
         }
 
         [HttpGet("get-appointments")]
