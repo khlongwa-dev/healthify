@@ -129,43 +129,21 @@ namespace backend.Controllers
                     : Ok(new { success = false, message = "Doctor not found." });
         }
 
-        [HttpGet("all-appointments")]
-        public async Task<IActionResult> GetAllAppointments()
+        [HttpGet("appointments-list")]
+        public async Task<IActionResult> GetAllAppointmentList()
         {
-            var token = Request.Headers["aToken"].FirstOrDefault();
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized(new { success = false, message = "Token is missing" });
-            }
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var admin = await _deps.AdminService.GetAdminFromTokenAsync(token);
 
-            var principal = _jwt.ValidateToken(token);
-            if (principal == null)
-            {
-                return Unauthorized(new { success = false, message = "Invalid token" });
-            }
-
-            var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int adminId))
-            {
-                return Unauthorized(new { success = false, message = "Invalid admin ID in token" });
-            }
-
-            var admin = await _context.Admins.FirstOrDefaultAsync(u => u.Id == adminId);
             if (admin == null)
-            {
-                return NotFound(new { success = false, message = "Admin not found" });
-            }
+                return Ok(new { success = false, message = "Not authorized." });
 
-            var appointments = await _context.Appointments
-                .Include(a => a.Doctor)
-                .Include(a => a.User)
-                .ToListAsync();
+            var appointments = (await _deps.AppointmentService
+                .GetAllAppointmentsAsync())
+                .OrderByDescending(a => a.Id)
+                .ToList();
 
-            return Ok(new
-            {
-                success = true,
-                appointments
-            });
+            return Ok(new { success = true, appointments });
         }
 
         [HttpPost("cancel-appointment")]
