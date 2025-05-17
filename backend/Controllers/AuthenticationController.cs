@@ -41,13 +41,12 @@ namespace backend.Controllers
         [HttpPost("user/login")]
         public IActionResult UserLogin([FromBody] LoginDto dto)
         {
-            var user = _context.Users.FirstOrDefault(d => d.Email == dto.Email);
+            var user = _context.Users.FirstOrDefault(u => u.Email == dto.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
-
                 return Unauthorized(new { success = false, message = "Invalid email or password." });
 
-            var token = _jwt.GenerateToken(user);
+            var token = _jwtService.GenerateToken(user);
 
             return Ok(new
             {
