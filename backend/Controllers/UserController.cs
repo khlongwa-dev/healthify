@@ -66,7 +66,7 @@ namespace backend.Controllers
             bool book = await _deps.AppointmentService.BookAppointmentAsync(dto, user.Id);
 
             return book
-                    ? Ok(new { success = true, message = "Appointment booked successfully." }) 
+                    ? Ok(new { success = true, message = "Appointment booked successfully." })
                     : Ok(new { success = false, message = "Doctor not available." });
         }
 
@@ -78,12 +78,12 @@ namespace backend.Controllers
             if (user == null)
                 return Ok(new { success = false, message = "Not authorized." });
 
-            var appointmentId = body.GetValueOrDefault("appointmentId");    
-        
+            var appointmentId = body.GetValueOrDefault("appointmentId");
+
             bool cancel = await _deps.AppointmentService.CancelAppointmentAsync(appointmentId, user.Id, "User");
 
             return cancel
-                    ? Ok(new { success = true, message = "Appointment cancelled successfully." }) 
+                    ? Ok(new { success = true, message = "Appointment cancelled successfully." })
                     : Ok(new { success = false, message = "Appointment not found." });
         }
 
@@ -95,13 +95,31 @@ namespace backend.Controllers
             if (user == null)
                 return Ok(new { success = false, message = "Not authorized." });
 
-            var appointmentId = body.GetValueOrDefault("appointmentId");    
-        
+            var appointmentId = body.GetValueOrDefault("appointmentId");
+
             bool clear = await _deps.UserService.ClearUserAppointmentByIdAsync(appointmentId, user.Id);
 
             return clear
-                    ? Ok(new { success = true, message = "Appointment cleared successfully." }) 
+                    ? Ok(new { success = true, message = "Appointment cleared successfully." })
                     : Ok(new { success = false, message = "Appointment not found." });
+        }
+        
+        [HttpGet("get-appointments")]
+        public async Task<IActionResult> GetUserAppointments()
+        {
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var user = await _deps.UserService.GetUserFromTokenAsync(token);
+
+            if (user == null)
+                return Ok(new { success = false, message = "Not authorized." });
+
+
+            var appointments = (await _deps.UserService
+                .GetUserAppointmentsByIdAsync(user.Id))
+                .OrderByDescending(a => a.Id)
+                .ToList();
+
+            return Ok(new { success = true, appointments});
         }
     }
 }
