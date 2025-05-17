@@ -75,9 +75,9 @@ namespace backend.Controllers
         }
 
         [HttpPost("user/register")]
-        public async Task<IActionResult> CreateUser([FromBody] UserRegisterDto dto)
+        public async Task<IActionResult> RegisterUser([FromBody] UserRegisterDto dto)
         {
-            if (_context.Users.Any(d => d.Email == dto.Email))
+            if (_context.Users.Any(u => u.Email == dto.Email))
                 return BadRequest(new { success = false, message = "Email already exists." });
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
@@ -86,18 +86,18 @@ namespace backend.Controllers
             {
                 Name = dto.Name,
                 Email = dto.Email,
-                Password = passwordHash,
+                Password = passwordHash
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            var token = _jwt.GenerateToken(user);
+            var token = _jwtService.GenerateToken(user);
 
             return Ok(new
             {
                 success = true,
-                message = "User created successfully.",
+                message = "User registered successfully.",
                 user,
                 token
             });
