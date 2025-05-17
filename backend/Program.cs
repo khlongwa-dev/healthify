@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using CloudinaryDotNet;
+using backend.Services.Interfaces;
+using backend.Dependencies;
+using backend.Services.Implementations;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,6 +80,14 @@ builder.Services.AddSingleton(sp =>
     return new Cloudinary(account);
 });
 
+//Injecting dependencies
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<HealthifyDependencies>();
+
 var app = builder.Build();
 
 // admin creation support
@@ -93,6 +104,8 @@ app.UseSwaggerUI();
 app.UseCors("AllowSpecificOrigins");
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
