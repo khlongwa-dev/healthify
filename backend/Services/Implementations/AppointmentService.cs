@@ -100,6 +100,30 @@ namespace backend.Services.Implementations
             return true;
         }
 
+        public async Task<bool> CompleteAppointmentAsync(int appointmentId, int callerId)
+        {
+            var appointment = await _context.Appointments.FindAsync(appointmentId);
+            var userAppointment = await _context.UserAppointments.FindAsync(appointmentId);
 
+            if (appointment == null || appointment.DoctorId != callerId) return false;
+            if (userAppointment == null || userAppointment.DoctorId != callerId) return false;
+
+            appointment.IsCompleted = true;
+            userAppointment.IsCompleted = true;
+            
+            var slot = await _context.BookedSlots
+                .FirstOrDefaultAsync(bs =>
+                    bs.DoctorId == appointment.DoctorId &&
+                    bs.SlotDate == appointment.SlotDate &&
+                    bs.SlotTime == appointment.SlotTime);
+
+            if (slot != null)
+                _context.BookedSlots.Remove(slot);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        
     }
 }
