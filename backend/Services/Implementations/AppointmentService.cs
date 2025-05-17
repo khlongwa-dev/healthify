@@ -67,6 +67,7 @@ namespace backend.Services.Implementations
             return true;
         }
 
+
         public async Task<bool> CancelAppointmentAsync(int appointmentId, int? callerId, string callerRole)
         {
             var appointment = await _context.Appointments.FindAsync(appointmentId);
@@ -100,6 +101,7 @@ namespace backend.Services.Implementations
             return true;
         }
 
+
         public async Task<bool> CompleteAppointmentAsync(int appointmentId, int callerId)
         {
             var appointment = await _context.Appointments.FindAsync(appointmentId);
@@ -119,6 +121,19 @@ namespace backend.Services.Implementations
 
             if (slot != null)
                 _context.BookedSlots.Remove(slot);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ClearAppointmentAsync(int appointmentId)
+        {
+            var appointment = await _context.Appointments.FindAsync(appointmentId);
+
+            if (appointment == null) return false;
+
+            
+            _context.Appointments.Remove(appointment);
 
             await _context.SaveChangesAsync();
             return true;
