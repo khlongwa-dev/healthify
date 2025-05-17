@@ -41,6 +41,20 @@ namespace backend.Services.Implementations
             return await _context.Doctors.FindAsync(id);
         }
 
-        
+        public async Task<bool> UpdateProfileAsync(int doctorId, UpdateDoctorProfileDto dto)
+        {
+            var doctor = await _context.Doctors.FindAsync(doctorId);
+            if (doctor == null) return false;
+
+            doctor.AddressLine1 = dto.AddressLine1;
+            doctor.AddressLine2 = dto.AddressLine2;
+            doctor.Available = dto.Available;
+            doctor.Fees = dto.Fees;
+
+            _context.Doctors.Update(doctor);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
