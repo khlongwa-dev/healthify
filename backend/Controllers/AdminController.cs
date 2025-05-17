@@ -91,50 +91,25 @@ namespace backend.Controllers
         }
 
         [HttpPost("add-doctor")]
-        public async Task<IActionResult> CreateDoctor([FromForm] DoctorDto dto)
+        public async Task<IActionResult> AddDoctor([FromForm] CreateDoctorDto dto)
         {
-            if (_context.Doctors.Any(d => d.Email == dto.Email))
-                return BadRequest(new { success = false, message = "Email already exists." });
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var admin = await _deps.AdminService.GetAdminFromTokenAsync(token);
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            if (admin == null)
+                return Ok(new { success = false, message = "Not authorized." });
 
-            string imageUrl = "";
+            string? imageUrl = null;
             if (dto.Image != null && dto.Image.Length > 0)
             {
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(dto.Image.FileName, dto.Image.OpenReadStream()),
-                    Folder = "doctor_profiles"
-                };
-
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                imageUrl = uploadResult.SecureUrl.ToString();
+                imageUrl = await Helpers.CloudinaryHelper.UploadImageAsync(_deps.Cloudinary, dto.Image, "doctor_profiles");
             }
 
-            var doctor = new Doctor
-            {
-                Name = dto.Name,
-                Email = dto.Email,
-                Password = passwordHash,
-                ImageUrl = imageUrl,
-                Specialty = dto.Specialty,
-                Degree = dto.Degree,
-                Experience = dto.Experience,
-                About = dto.About,
-                Fees = dto.Fees,
-                AddressLine1 = dto.AddressLine1,
-                AddressLine2 = dto.AddressLine2
-            };
+            bool addDoctor = await _deps.AdminService.CreateDoctorAsync(dto, imageUrl);
 
-            _context.Doctors.Add(doctor);
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                success = true,
-                message = "Doctor created successfully.",
-                doctor
-            });
+            return addDoctor
+                        ? Ok(new { success = true, message = "Doctor added successfully." })
+                        : Ok(new { success = false, message = "Email already exist." });
         }
 
         
