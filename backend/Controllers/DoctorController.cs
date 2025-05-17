@@ -162,6 +162,23 @@ namespace backend.Controllers
             return Ok(new { success = true, appointments });
         }
 
+        [HttpPut("cancel-appointment")]
+        public async Task<IActionResult> CancelAppointment([FromBody] Dictionary<string, int> body)
+        {
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var doctor = await _deps.DoctorService.GetDoctorFromTokenAsync(token);
+            if (doctor == null)
+                return Ok(new { success = false, message = "Not authorized." });
+
+            var appointmentId = body.GetValueOrDefault("appointmentId");
+
+            bool cancel = await _deps.AppointmentService.CancelAppointmentAsync(appointmentId, doctor.Id, "Doctor");
+
+            return cancel
+                    ? Ok(new { success = true, message = "Appointment cancelled successfully." })
+                    : Ok(new { success = false, message = "Appointment not found." });
+        }
+
 
         [HttpPost("complete-appointment")]
         public async Task<IActionResult> CompleteAppointment([FromBody] Dictionary<string, int> body)
@@ -205,69 +222,6 @@ namespace backend.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { success = true, message = "Appointment completed." });
-        }
-
-        [HttpPost("cancel-appointment")]
-        public async Task<IActionResult> CancelAppointment([FromBody] Dictionary<string, int> body)
-        {
-            var token = Request.Headers["dToken"].FirstOrDefault();
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized(new { success = false, message = "Token is missing" });
-            }
-
-            var principal = _jwt.ValidateToken(token);
-            if (principal == null)
-            {
-                return Unauthorized(new { success = false, message = "Invalid token" });
-            }
-
-            var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int docId))
-            {
-                return Unauthorized(new { success = false, message = "Invalid user ID in token" });
-            }
-
-            var admin = await _context.Doctors.FirstOrDefaultAsync(a => a.Id == docId);
-            if (admin == null)
-            {
-                return NotFound(new { success = false, message = "Admin not found" });
-            }
-
-            if (!body.TryGetValue("appointmentId", out int appointmentId))
-            {
-                return BadRequest(new { success = false, message = "Missing doctor ID." });
-            }
-
-            // find the appointment
-            var appointment = await _context.Appointments
-                .Include(a => a.Doctor)
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(a => a.Id == appointmentId);
-
-            if (appointment == null)
-            {
-                return NotFound(new { success = false, message = "Appointment not found or does not belong to the user." });
-            }
-
-            //cancel appointment
-            appointment.Cancelled = true;
-
-            // find a booked slot
-            var bookedSlot = await _context.BookedSlots.FirstOrDefaultAsync(bs =>
-                bs.DoctorId == appointment.DoctorId &&
-                bs.SlotDate == appointment.SlotDate &&
-                bs.SlotTime == appointment.SlotTime);
-
-            // remove booked slot
-            if (bookedSlot != null)
-            {
-                _context.BookedSlots.Remove(bookedSlot);
-            }
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Appointment cancelled successfully." });
         }
 
         
