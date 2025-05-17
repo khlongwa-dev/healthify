@@ -126,44 +126,40 @@ namespace backend.Controllers
             });
         }
 
-        [HttpGet("appointments")]
-        public async Task<IActionResult> GetUserAppointments()
+        [HttpGet("get-appointments")]
+        public async Task<IActionResult> GetDoctorAppointments()
         {
-            var token = Request.Headers["dToken"].FirstOrDefault();
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized(new { success = false, message = "Token is missing" });
-            }
+            string? token = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            var doctor = await _deps.DoctorService.GetDoctorFromTokenAsync(token);
 
-            var principal = _jwt.ValidateToken(token);
-            if (principal == null)
-            {
-                return Unauthorized(new { success = false, message = "Invalid token" });
-            }
-
-            var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int docId))
-            {
-                return Unauthorized(new { success = false, message = "Invalid user ID in token" });
-            }
-
-            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == docId);
             if (doctor == null)
-            {
-                return NotFound(new { success = false, message = "Doctor not found doc " });
-            }
+                return Ok(new { success = false, message = "Not authorized." });
 
-            var appointments = await _context.Appointments
-                .Where(a => a.DoctorId == docId)
-                .Include(a => a.User)
-                .OrderByDescending(a => a.Id)
-                .ToListAsync();
+            var appointments = await _deps.DoctorService.GetDoctorAppointmentsByIdAsync(doctor.Id);
 
-            return Ok(new
+            var formatted = appointments.Select(a => new
             {
-                success = true,
-                appointments
+                a.Id,
+                a.SlotDate,
+                a.SlotTime,
+                DoctorFee = a.Doctor?.Fees,
+                a.Cancelled,
+                a.Paid,
+                a.IsCompleted,
+                a.Date,
+                a.Doctor,
+                User = a.User == null ? null : new
+                {
+                    a.User.Id,
+                    a.User.Name,
+                    a.User.AddressLine1,
+                    a.User.AddressLine2,
+                    a.User.DoB,
+                    a.User.ImageUrl
+                }
             });
+
+            return Ok(new { success = true, appointments });
         }
 
 
