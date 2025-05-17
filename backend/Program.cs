@@ -45,12 +45,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddScoped<JwtService>();
-
 // Configure SQLite
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlite("Data Source=doctors.db"));
-
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -71,9 +68,13 @@ builder.Services.Configure<CloudinarySettings>(
 // Add Cloudinary instance
 builder.Services.AddSingleton(sp =>
 {
-    var config = builder.Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
+    var config = builder.Configuration
+        .GetSection("CloudinarySettings")
+        .Get<CloudinarySettings>()
+        ?? throw new InvalidOperationException("Cloudinary settings are missing in configuration.");
+
     var account = new Account(config.CloudName, config.ApiKey, config.ApiSecret);
-    return new CloudinaryDotNet.Cloudinary(account);
+    return new Cloudinary(account);
 });
 
 var app = builder.Build();
