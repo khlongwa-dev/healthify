@@ -24,7 +24,7 @@ This project showcases:
 - 📆 Book an appointment (date & time)
 - 👤 Manage profile (edit & save)
 - 📋 View booked appointments
-- ❌ Cancel appointment
+- ❌ Cancel and clear appointments
 - 💰 UI-ready button for payment (to be integrated)
 
 ### 🧑‍⚕️ Doctor
@@ -38,7 +38,7 @@ This project showcases:
 - 🧑‍⚕️ Add new doctors
 - 🗃️ View all registered doctors
 - 🔄 Toggle doctor availability
-- ❌ Cancel user appointments
+- ❌ Cancel and clear doctor appointments
 
 ---
 
@@ -121,6 +121,7 @@ This project showcases:
 - `POST /api/admin/add-doctor` — add new doctor
 - `PUT /api/admin/change-availability`
 - `PUT /api/admin/cancel-appointment`
+- `POST /api/admin/clear-appointment`
 
 ### `DoctorController`
 - `GET /api/doctor/dashboard`
@@ -133,6 +134,7 @@ This project showcases:
 - `POST /api/user/book-appointment`
 - `GET /api/user/get-appointments`
 - `PUT /api/user/cancel-appointments`
+- `POST /api/admin/clear-appointment`
 - `GET /api/user/get-profile`
 - `PUT /api/user/update-profile`
 
@@ -147,7 +149,8 @@ This project showcases:
 To create an initial admin:
 
 ```bash
-dotnet run createsuperuser└── Program.cs
+cd backend
+dotnet run createsuperuser
 ```
 ## 🛠 Getting Started
 ### 🖥️ Frontend
@@ -180,7 +183,7 @@ Users can book appointments by selecting time and date.
 
 ### 📁 User Appointments Page  
 Displays all booked appointments with cancel and pay actions.  
-![User Appointments](https://res.cloudinary.com/dxs6tromb/image/upload/v1747491964/Screenshot_From_2025-05-17_16-20-33_klbump.png)
+![User Appointments](https://res.cloudinary.com/dxs6tromb/image/upload/v1747592539/Screenshot_From_2025-05-18_20-06-51_aleeiy.png)
 
 ### 👤 User Profile Page  
 Edit and update user details with state-based form functionality.  
