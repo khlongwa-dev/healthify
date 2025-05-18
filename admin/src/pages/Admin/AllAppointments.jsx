@@ -6,7 +6,7 @@ import { AppContext } from '../../context/AppContext'
 import { assets } from '../../assets/assets'
 
 const AllAppointments = () => {
-  const { adminToken, appointments, fetchAppointments, cancelAppointment } = useContext(AdminContext)
+  const { adminToken, appointments, fetchAppointments, cancelAppointment, clearAppointment } = useContext(AdminContext)
   const { calculateAge, formatSlotDate, currencySymbol } = useContext(AppContext)
 
   useEffect(() =>
@@ -43,11 +43,26 @@ const AllAppointments = () => {
             </div>
             <p>{currencySymbol}{item.doctorFee}</p>
             {
-              item.cancelled
-                ? <p className='text-red-400 text-xs font-medium'>Cancelled</p>
-                : item.isCompleted
-                  ? <p className='text-green-500 text-xs font-medium'>Completed</p>
-                  : <img onClick={() => cancelAppointment(item.id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+              item.cancelled || item.isCompleted ? (
+                <div className='flex items-center gap-2'>
+                  <p className={`text-xs font-medium ${item.cancelled ? 'text-red-400' : 'text-green-500'}`}>
+                    {item.cancelled ? 'Cancelled' : 'Completed'}
+                  </p>
+                  <span
+                    className='text-orange-400 text-xs cursor-pointer font-medium'
+                    onClick={() => clearAppointment(item.id)}
+                  >
+                    Clear
+                  </span>
+                </div>
+              ) : (
+                <img
+                  onClick={() => cancelAppointment(item.id)}
+                  className='w-10 cursor-pointer'
+                  src={assets.cancel_icon}
+                  alt="Cancel"
+                />
+              )
             }
           </div>
         ))}
