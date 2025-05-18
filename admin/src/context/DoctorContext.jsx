@@ -69,26 +69,6 @@ const DoctorContextProvider = ({ children }) => {
     }
   }
 
-  const clearAppointment = async (appointmentId) => {
-    try {
-      const { data } = await axios.post(
-        `${backendUrl}api/doctor/clear-appointment`,
-        { appointmentId },
-        { headers: { Authorization: `Bearer ${doctorToken}` } }
-      )
-
-      if (data.success) {
-        toast.success(data.message)
-        getDoctorAppointments()
-        fetchDashboardStats()
-      } else {
-        toast.error(data.message)
-      }
-    } catch (error) {
-      toast.error(error.message)
-    }
-  }
-
   const fetchDashboardStats = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}api/doctor/dashboard`, {
@@ -130,7 +110,6 @@ const DoctorContextProvider = ({ children }) => {
     getDoctorAppointments,
     completeAppointment,
     cancelAppointment,
-    clearAppointment,
     dashboardStats,
     setDashboardStats,
     fetchDashboardStats,

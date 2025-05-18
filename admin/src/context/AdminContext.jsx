@@ -109,7 +109,26 @@ const AdminContextProvider = ({ children }) => {
     }
   }
 
-  
+  // Clear appointment
+  const clearAppointment = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}api/admin/clear-appointment`,
+        { appointmentId },
+        { headers: { Authorization: `Bearer ${adminToken}` } }
+      )
+
+      if (data.success) {
+        toast.success(data.message)
+        fetchAppointments()
+        fetchDashboardStats()
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
   const contextValue = {
     adminToken,
@@ -121,8 +140,9 @@ const AdminContextProvider = ({ children }) => {
     appointments,
     fetchAppointments,
     cancelAppointment,
+    clearAppointment,
     dashboardStats,
-    fetchDashboardStats
+    fetchDashboardStats,
   }
 
   return (
