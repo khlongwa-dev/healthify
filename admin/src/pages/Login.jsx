@@ -7,11 +7,11 @@ import { DoctorContext } from '../context/DoctorContext'
 
 const Login = () => {
 
-    const [state, setState] = useState('Admin')
+    const [role, setRole] = useState('Admin')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const {setAToken, backendUrl} = useContext(AdminContext)
-    const {setDToken} = useContext(DoctorContext)
+    const {setAdminToken, backendUrl} = useContext(AdminContext)
+    const {setDoctorToken} = useContext(DoctorContext)
 
     const navigate = useNavigate()
     
@@ -20,14 +20,13 @@ const Login = () => {
 
         try {
 
-            if (state === 'Admin') {
+            if (role === 'Admin') {
                 const {data} = await axios.post(backendUrl + 'api/authentication/admin/login', {email, password})
             
                 if (data.token) {
-                    localStorage.setItem('aToken', data.token)
-                    setAToken(data.token)
+                    localStorage.setItem('adminToken', data.token)
+                    setAdminToken(data.token)
                     toast.success(data.message)
-                    navigate('/admin-dashboard')
                 } else {
                     toast.error(data.message)
                 }
@@ -35,8 +34,8 @@ const Login = () => {
                 const {data} = await axios.post(backendUrl + 'api/authentication/doctor/login', {email, password})
 
                 if (data.token) {
-                    localStorage.setItem('dToken', data.token)
-                    setDToken(data.token)
+                    localStorage.setItem('doctorToken', data.token)
+                    setDoctorToken(data.token)
                     toast.success(data.message)
                 } else {
                     toast.error(data.message)
