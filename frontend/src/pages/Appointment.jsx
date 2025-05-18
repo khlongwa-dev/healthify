@@ -9,7 +9,7 @@ import axios from 'axios'
 const Appointment = () => {
   const {docId} = useParams()
   const navigate = useNavigate()
-  const {doctors, currencySymbol, backendUrl, token, getDoctorsData} = useContext(AppContext)
+  const {doctors, currencySymbol, backendUrl, userToken, fetchDoctors} = useContext(AppContext)
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
   const [docInfo, setDocInfo] = useState(null)
@@ -79,7 +79,7 @@ const Appointment = () => {
   }
 
   const bookAppointment = async () => {
-    if (!token) {
+    if (!userToken) {
       toast.warn('Login to book the appointment')
       return navigate('/login')
     }
@@ -99,13 +99,13 @@ const Appointment = () => {
           SlotDate: slotDate,
           SlotTime: slotTime
         },
-        {headers:{Authorization: `Bearer ${token}`}}
+        {headers:{Authorization: `Bearer ${userToken}`}}
       )
       
 
       if (data.success) {
         toast.success(data.message)
-        getDoctorsData()
+        fetchDoctors()
         navigate('/user-appointments')
         console.log(docInfo)
       } else {

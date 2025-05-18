@@ -4,7 +4,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 
 const UserAppointments = () => {
-  const { backendUrl, token, getDoctorsData } = useContext(AppContext)
+  const { backendUrl, userToken, fetchDoctors } = useContext(AppContext)
   const [appointments, setAppointments] = useState([])
   const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   
@@ -16,11 +16,11 @@ const UserAppointments = () => {
 
   const getUserAppointments = async () => {
     try {
-      const {data} = await axios.get(backendUrl + 'api/user/get-appointments', {headers:{Authorization: `Bearer ${token}`}})
+      const {data} = await axios.get(backendUrl + 'api/user/get-appointments', {headers:{Authorization: `Bearer ${userToken}`}})
 
       if (data.success) {
         setAppointments(data.appointments)
-        getDoctorsData()
+        fetchDoctors()
         console.log(data.appointments)
       }
     } catch (error) {
@@ -32,7 +32,7 @@ const UserAppointments = () => {
   const cancelAppointment = async (appointmentId) => {
     try {
       
-      const {data} = await axios.put(backendUrl + 'api/user/cancel-appointment', {appointmentId}, {headers:{Authorization: `Bearer ${token}`}})
+      const {data} = await axios.put(backendUrl + 'api/user/cancel-appointment', {appointmentId}, {headers:{Authorization: `Bearer ${userToken}`}})
       
       if(data.success) {
         toast.success(data.message)
@@ -49,7 +49,7 @@ const UserAppointments = () => {
   const clearAppointment = async (appointmentId) => {
     try {
       
-      const {data} = await axios.post(backendUrl + 'api/user/clear-appointment', {appointmentId}, {headers:{Authorization: `Bearer ${token}`}})
+      const {data} = await axios.post(backendUrl + 'api/user/clear-appointment', {appointmentId}, {headers:{Authorization: `Bearer ${userToken}`}})
       
       if(data.success) {
         toast.success(data.message)
@@ -68,10 +68,10 @@ const UserAppointments = () => {
   }
 
   useEffect(()=>{
-    if (token) {
+    if (userToken) {
       getUserAppointments()
     }
-  }, [token])
+  }, [userToken])
 
 
   return (
@@ -98,7 +98,7 @@ const UserAppointments = () => {
               
               {item.cancelled && !item.isCompleted && <button className='sm:min-w-48 py-2 border border-red-500 rounded text-red-500'>Appointment cancelled</button>}
               {item.isCompleted && <button className='sm:min-w-48 py-2 border border-green-500 rounded text-green-500'>Appointment completed</button>}
-              {item.isCompleted || item.cancelled  && <button onClick={()=>clearAppointment(item.id)} className='text-sm text-orange-400 text-center sm:min-w-48 py-2 border border-orange-400 rounded hover:bg-orange-400 hover:text-white transition-all duration-300'>Clear appointment</button>}
+              {item.cancelled  && <button onClick={()=>clearAppointment(item.id)} className='text-sm text-orange-400 text-center sm:min-w-48 py-2 border border-orange-400 rounded hover:bg-orange-400 hover:text-white transition-all duration-300'>Clear appointment</button>}
               {item.isCompleted && <button onClick={()=>clearAppointment(item.id)} className='text-sm text-orange-400 text-center sm:min-w-48 py-2 border border-orange-400 rounded hover:bg-orange-400 hover:text-white transition-all duration-300'>Clear appointment</button>}
             </div>
           </div>
