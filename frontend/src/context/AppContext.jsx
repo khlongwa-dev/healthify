@@ -1,83 +1,93 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react"
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
 export const AppContext = createContext()
 
-const AppContextProvider = (props) => {
-    const currencySymbol = 'R';
+const AppContextProvider = ({ children }) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL
-    const [doctors, setDoctors] = useState([])
-    
-    const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token'):false)
-    const [userData, setUserData] = useState(false)
+    const currencySymbol = 'R'
 
+    const [doctorList, setDoctorList] = useState([])
+    const [userToken, setUserToken] = useState(localStorage.getItem('token') || false)
+    const [userProfile, setUserProfile] = useState(false)
 
-    const getDoctorsData = async () => {
+    // Fetch all doctors from the backend
+    const fetchDoctorList = async () => {
         try {
-            const {data} = await axios.get(backendUrl + 'api/healthify/doctors-list')
+            const response = await axios.get(`${backendUrl}api/healthify/doctors-list`)
+            const { success, doctors, message } = response.data
 
-            if (data.success) {
-                setDoctors(data.doctors)
+            if (success) {
+                setDoctorList(doctors)
             } else {
-                toast.error(data.message)
+                toast.error(message)
             }
         } catch (error) {
-            console.log(error)
+            console.error("Error fetching doctors:", error)
             toast.error(error.message)
         }
     }
 
-    const loadUserProfileData = async () => {
+    // Load user profile if token is present
+    const fetchUserProfile = async () => {
         try {
-            const {data} = await axios.get(backendUrl + 'api/user/get-profile', {headers:{Authorization: `Bearer ${token}`}})
-            console.log(data)
-            if (data.success) {
-                setUserData(data.user)
-                toast.success(data.message)
-                console.log(data.user)
+            const response = await axios.get(`${backendUrl}api/user/get-profile`, {
+                headers: { Authorization: `Bearer ${userToken}` }
+            })
+
+            const { success, user, message } = response.data
+
+            if (success) {
+                setUserProfile(user)
+                toast.success(message)
             } else {
-                toast.error(data.message)
+                toast.error(message)
             }
         } catch (error) {
-            console.log(error)
+            console.error("Error fetching user profile:", error)
             toast.error(error.message)
         }
     }
 
-    const calculateAge = (dob) => {
+    // Calculates age from a given date of birth
+    const calculateAge = (dateOfBirth) => {
         const today = new Date()
-        const birthDate = new Date(dob)
-
-        let age = today.getFullYear() - birthDate.getFullYear()
-
+        const birthDate = new Date(dateOfBirth)
+        const age = today.getFullYear() - birthDate.getFullYear()
         return age
     }
 
-    const value = {
-        doctors, getDoctorsData,
-        currencySymbol,
-        token, setToken,
+    // Initial fetch of doctor list
+    useEffect(() => {
+        fetchDoctorList()
+    }, [])
+
+    // Fetch user profile on token update
+    useEffect(() => {
+        if (userToken) {
+            fetchUserProfile()
+        } else {
+            setUserProfile(false)
+        }
+    }, [userToken])
+
+    const contextValue = {
         backendUrl,
-        userData, setUserData,
-        loadUserProfileData
+        currencySymbol,
+        doctorList,
+        fetchDoctorList,
+        userProfile,
+        setUserProfile,
+        userToken,
+        setUserToken,
+        fetchUserProfile,
+        calculateAge
     }
 
-    useEffect(()=>{
-        getDoctorsData()
-    },[])
-
-    useEffect(()=>{
-        if (token) {
-            loadUserProfileData()
-        } else {
-            setUserData(false)
-        }
-    },[token])
-
     return (
-        <AppContext.Provider value={value}>
-            {props.children}
+        <AppContext.Provider value={contextValue}>
+            {children}
         </AppContext.Provider>
     )
 }
