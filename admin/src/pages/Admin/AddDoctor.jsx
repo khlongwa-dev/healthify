@@ -17,7 +17,7 @@ const AddDoctor = () => {
   const [address1, setAddress1] = useState('')
   const [address2, setAddress2] = useState('')
 
-  const { backendUrl, aToken} = useContext(AdminContext)
+  const { backendUrl, adminToken} = useContext(AdminContext)
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
@@ -42,7 +42,7 @@ const AddDoctor = () => {
       formData.append('AddressLine1', address1)
       formData.append('AddressLine2', address2)
 
-      const {data} = await axios.post(backendUrl + 'api/admin/add-doctor', formData, {headers: {aToken}})
+      const {data} = await axios.post(backendUrl + 'api/admin/add-doctor', formData, {headers:{Authorization: `Bearer ${adminToken}`}})
 
       if (data.success) {
         toast.success(data.message)
@@ -97,15 +97,15 @@ const AddDoctor = () => {
               <p>Experience</p>
               <select onChange={(e)=> setExperience(e.target.value)} value={experience} className='border rounded px-3 py-2'>
                 <option value="1 Year">1 Year</option>
-                <option value="2 Year">2 Year</option>
-                <option value="3 Year">3 Year</option>
-                <option value="4 Year">4 Year</option>
-                <option value="5 Year">5 Year</option>
-                <option value="6 Year">6 Year</option>
-                <option value="7 Year">7 Year</option>
-                <option value="8 Year">8 Year</option>
-                <option value="9 Year">9 Year</option>
-                <option value="10 Year">10 Year</option>
+                <option value="2 Year">2 Years</option>
+                <option value="3 Year">3 Years</option>
+                <option value="4 Year">4 Years</option>
+                <option value="5 Year">5 Years</option>
+                <option value="6 Year">6 Years</option>
+                <option value="7 Year">7 Years</option>
+                <option value="8 Year">8 Years</option>
+                <option value="9 Year">9 Years</option>
+                <option value="10 Year">10 Years</option>
               </select>
             </div>
 
