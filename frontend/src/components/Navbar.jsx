@@ -1,43 +1,41 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { AppContext } from '../context/AppContext'
-import { assets } from '../assets/assets'
+import { assets } from '../assets/assets';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
 
 const Navbar = () => {
-  const navigate = useNavigate()
-  const { token: userToken, setToken: setUserToken, userProfile } = useContext(AppContext)
 
-  const [isMenuVisible, setMenuVisible] = useState(false)
-  const [isDropdownOpen, setDropdownOpen] = useState(false)
+  const navigate = useNavigate();
 
-  const dropdownRef = useRef(null)
+  const {userToken, setUserToken, userProfile} = useContext(AppContext)
 
-  // Handle logout
-  const handleLogout = () => {
-    setUserToken(false)
-    localStorage.removeItem('token')
+  const [showMenu, setShowMenu] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef(null); // Create a ref for the dropdown
+
+  const logout = () => {
+    setToken(false)
+    localStorage.removeItem('userToken')
     navigate('/')
   }
+  const toggleDropdown = () => {
+    setDropdownOpen(prev => !prev);
+  };
 
-  // Toggle dropdown visibility
-  const toggleDropdownMenu = () => {
-    setDropdownOpen(prev => !prev)
-  }
-
-  // Close dropdown if clicked outside
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
+  useEffect(()=> {
+    const handleClickOustide = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false)
+        setDropdownOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleOutsideClick)
+    document.addEventListener('mousedown', handleClickOustide);
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick)
-    }
-  }, [])
+      document.removeEventListener('mousedown', handleClickOustide);
+    };
+  }, []);
 
   return (
     <div className='flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400'>
@@ -63,9 +61,9 @@ const Navbar = () => {
       
       <div className='flex items-center gap-4'>
         {
-          token && userData
+          userToken && userProfile
           ? <div className='flex items-center gap-2 cursor-pointer relative'>
-            <img className='w-8 rounded-full' src={userData.imageUrl} onClick={toggleDropdown} alt="" />
+            <img className='w-8 rounded-full' src={userProfile.imageUrl} onClick={toggleDropdown} alt="" />
             <img className='w-2.5' src={assets.dropdown_icon} onClick={toggleDropdown} alt="" />
             {dropdownOpen && (
               <div ref={dropdownRef} className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20'>

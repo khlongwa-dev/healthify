@@ -8,18 +8,18 @@ const AppContextProvider = ({ children }) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL
     const currencySymbol = 'R'
 
-    const [doctorList, setDoctorList] = useState([])
+    const [doctors, setDoctors] = useState([])
     const [userToken, setUserToken] = useState(localStorage.getItem('token') || false)
     const [userProfile, setUserProfile] = useState(false)
 
     // Fetch all doctors from the backend
-    const fetchDoctorList = async () => {
+    const fetchDoctors = async () => {
         try {
             const response = await axios.get(`${backendUrl}api/healthify/doctors-list`)
             const { success, doctors, message } = response.data
 
             if (success) {
-                setDoctorList(doctors)
+                setDoctors(doctors)
             } else {
                 toast.error(message)
             }
@@ -60,7 +60,7 @@ const AppContextProvider = ({ children }) => {
 
     // Initial fetch of doctor list
     useEffect(() => {
-        fetchDoctorList()
+        fetchDoctors()
     }, [])
 
     // Fetch user profile on token update
@@ -75,8 +75,8 @@ const AppContextProvider = ({ children }) => {
     const contextValue = {
         backendUrl,
         currencySymbol,
-        doctorList,
-        fetchDoctorList,
+        doctors,
+        fetchDoctors,
         userProfile,
         setUserProfile,
         userToken,
