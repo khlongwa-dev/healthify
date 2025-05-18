@@ -17,6 +17,7 @@ const Navbar = () => {
   const logout = () => {
     setToken(false)
     localStorage.removeItem('token')
+    navigate('/')
   }
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
