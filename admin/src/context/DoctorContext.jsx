@@ -41,6 +41,7 @@ const DoctorContextProvider = ({ children }) => {
       if (data.success) {
         toast.success(data.message)
         getDoctorAppointments()
+        fetchDashboardStats()
       } else {
         toast.error(data.message)
       }

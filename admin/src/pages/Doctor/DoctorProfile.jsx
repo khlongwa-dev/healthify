@@ -19,7 +19,7 @@ const DoctorProfile = () => {
       formData.append('AddressLine1', profileData.addressLine1)
       formData.append('AddressLine2', profileData.addressLine2)
 
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         `${backendUrl}api/doctor/update-profile`,
         formData,
         { headers: { Authorization: `Bearer ${doctorToken}` } }
