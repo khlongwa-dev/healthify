@@ -9,11 +9,13 @@ const AllAppointments = () => {
   const { adminToken, appointments, fetchAppointments, cancelAppointment } = useContext(AdminContext)
   const { calculateAge, formatSlotDate, currencySymbol } = useContext(AppContext)
 
-  useEffect(() => {
-    if (adminToken) {
-      fetchAppointments()
-    }
-  }, [adminToken])
+  useEffect(() =>
+    {
+      if (adminToken)
+      {
+        fetchAppointments()
+      }
+    }, [adminToken])
 
   return (
     <div className='w-full max-w-6xl m-5'>
