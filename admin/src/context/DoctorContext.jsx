@@ -1,109 +1,127 @@
 import React, { createContext, useState } from 'react'
-import { toast } from 'react-toastify'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 export const DoctorContext = createContext()
 
-const DoctorContextProvider = (props) => {
-    const [dToken, setDToken] = useState(localStorage.getItem('dToken')?localStorage.getItem('dToken'):'')
-    const [appointments, setAppointments] = useState([])
-    const [dashData, setDashData] = useState(false)
-    const [docData, setDocData] = useState(false)
-    const backendUrl = import.meta.env.VITE_BACKEND_URL
+const DoctorContextProvider = ({ children }) => {
+  const [doctorToken, setDoctorToken] = useState(
+    localStorage.getItem('dToken') || ''
+  )
+  const [appointments, setAppointments] = useState([])
+  const [dashboardStats, setDashboardStats] = useState(null)
+  const [profileData, setProfileData] = useState(null)
 
-    const getDoctorAppointments = async () => {
-        try {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
 
-            const {data} = await axios.get(backendUrl + 'api/doctor/appointments', {headers:{dToken}})
-            if (data.success) {
-                setAppointments(data.appointments)
-                console.log(data.appointments)
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.log("the issue is here dummy")
-            console.log(error)
-            toast.error(error.message)
-        }
+  const getDoctorAppointments = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}api/doctor/get-appointments`, {
+        headers: { Authorization: `Bearer ${doctorToken}` },
+      })
+
+      if (data.success) {
+        setAppointments(data.appointments)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
     }
+  }
 
-    const completeAppointment = async (appointmentId) => {
-        try {
-            
-            const {data} = await axios.post(backendUrl + 'api/doctor/complete-appointment', {appointmentId}, {headers:{dToken}})
-            if (data.success) {
-                toast.success(data.message)
-                getDoctorAppointments()
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
+  const completeAppointment = async (appointmentId) => {
+    try {
+      const { data } = await axios.put(
+        `${backendUrl}api/doctor/complete-appointment`,
+        { appointmentId },
+        { headers: { Authorization: `Bearer ${doctorToken}` } }
+      )
+
+      if (data.success) {
+        toast.success(data.message)
+        getDoctorAppointments()
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
     }
+  }
 
-    const cancelAppointment = async (appointmentId) => {
-        try {
-            
-            const {data} = await axios.post(backendUrl + 'api/doctor/cancel-appointment', {appointmentId}, {headers:{dToken}})
-            if (data.success) {
-                toast.success(data.message)
-                getDoctorAppointments()
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
+  const cancelAppointment = async (appointmentId) => {
+    try {
+      const { data } = await axios.put(
+        `${backendUrl}api/doctor/cancel-appointment`,
+        { appointmentId },
+        { headers: { Authorization: `Bearer ${doctorToken}` } }
+      )
+
+      if (data.success) {
+        toast.success(data.message)
+        getDoctorAppointments()
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
     }
+  }
 
-    const getDashboardData = async () => {
-        try {
-            const {data} = await axios.get(backendUrl + 'api/doctor/dashboard', {headers:{dToken}})
+  const fetchDashboardStats = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}api/doctor/dashboard`, {
+        headers: { Authorization: `Bearer ${doctorToken}` },
+      })
 
-            if (data.success) {
-                setDashData(data.dashdata)
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
+      if (data.success) {
+        setDashboardStats(data.dashdata)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
     }
+  }
 
-    const loadDoctorProfileData = async () => {
-        try {
-            const {data} = await axios.get(backendUrl + 'api/doctor/profile', {headers:{dToken}})
-            if (data.success) {
-                setDocData(data.doctor)
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
-    }
-    
-    const value = {
-        dToken, setDToken,
-        backendUrl, appointments,
-        setAppointments, getDoctorAppointments,
-        completeAppointment, cancelAppointment,
-        dashData, setDashData,
-        getDashboardData, docData,
-        setDocData, loadDoctorProfileData
-    }
+  const fetchDoctorProfile = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}api/doctor/get-profile`, {
+        headers: { Authorization: `Bearer ${doctorToken}` },
+      })
 
-    return (
-        <DoctorContext.Provider value= {value}>
-            {props.children}
-        </DoctorContext.Provider>
-    )
+      if (data.success) {
+        setProfileData(data.doctor)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const contextValue = {
+    doctorToken,
+    setDoctorToken,
+    backendUrl,
+    appointments,
+    setAppointments,
+    getDoctorAppointments,
+    completeAppointment,
+    cancelAppointment,
+    dashboardStats,
+    setDashboardStats,
+    fetchDashboardStats,
+    profileData,
+    setProfileData,
+    fetchDoctorProfile,
+  }
+
+  return (
+    <DoctorContext.Provider value={contextValue}>
+      {children}
+    </DoctorContext.Provider>
+  )
 }
 
 export default DoctorContextProvider
