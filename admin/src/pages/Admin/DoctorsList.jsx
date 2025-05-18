@@ -2,13 +2,16 @@ import React, { useContext, useEffect } from 'react'
 import { AdminContext } from '../../context/AdminContext'
 
 const DoctorsList = () => {
-  const { doctors, aToken, getAllDoctors, changeAvailability } = useContext(AdminContext)
+  const { doctors, adminToken, fetchDoctors, toggleDoctorAvailability } = useContext(AdminContext)
 
-  useEffect(()=>{
-    if (aToken) {
-      getAllDoctors()
-    }
-  }, [aToken])
+  useEffect(()=>
+    {
+      if (adminToken) 
+      {
+        fetchDoctors()
+      }
+    }, [adminToken])
+
   return (
     <div className='m-5 max-h-[90vh] overflow-y-scroll'>
       <h1 className='text-lg font-medium'>All Doctors</h1>
@@ -22,7 +25,7 @@ const DoctorsList = () => {
                 <p className='text-zinc-600 text-sm'>{item.specialty}</p>
                 
                 <div className='mt-2 flex items-center gap-1 text-sm'>
-                  <input onChange={()=>changeAvailability(item.id)} type="checkbox" checked={item.available}/>
+                  <input onChange={()=>toggleDoctorAvailability(item.id)} type="checkbox" checked={item.available}/>
                   <p>Available {item.available}</p>
                 </div>
               </div>
