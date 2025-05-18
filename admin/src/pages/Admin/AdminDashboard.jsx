@@ -3,7 +3,7 @@ import { AdminContext } from '../../context/AdminContext'
 import { assets } from '../../assets/assets'
 import { AppContext } from '../../context/AppContext'
 
-const Dashboard = () => {
+const AdminDashboard = () => {
 
   const { adminToken, fetchDashboardStats, cancelAppointment, dashboardStats } = useContext(AdminContext)
   const { formatSlotDate } = useContext(AppContext)
@@ -76,4 +76,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default AdminDashboard
