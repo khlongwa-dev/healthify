@@ -1,41 +1,43 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import { assets } from '../assets/assets';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { AppContext } from '../context/AppContext';
+import { NavLink, useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
+import { assets } from '../assets/assets'
 
 const Navbar = () => {
+  const navigate = useNavigate()
+  const { token: userToken, setToken: setUserToken, userProfile } = useContext(AppContext)
 
-  const navigate = useNavigate();
+  const [isMenuVisible, setMenuVisible] = useState(false)
+  const [isDropdownOpen, setDropdownOpen] = useState(false)
 
-  const {token, setToken, userData} = useContext(AppContext)
+  const dropdownRef = useRef(null)
 
-  const [showMenu, setShowMenu] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const dropdownRef = useRef(null); // Create a ref for the dropdown
-
-  const logout = () => {
-    setToken(false)
+  // Handle logout
+  const handleLogout = () => {
+    setUserToken(false)
     localStorage.removeItem('token')
     navigate('/')
   }
-  const toggleDropdown = () => {
-    setDropdownOpen(prev => !prev);
-  };
 
-  useEffect(()=> {
-    const handleClickOustide = (event) => {
+  // Toggle dropdown visibility
+  const toggleDropdownMenu = () => {
+    setDropdownOpen(prev => !prev)
+  }
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
+        setDropdownOpen(false)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOustide);
+    document.addEventListener('mousedown', handleOutsideClick)
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOustide);
-    };
-  }, []);
+      document.removeEventListener('mousedown', handleOutsideClick)
+    }
+  }, [])
 
   return (
     <div className='flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400'>
