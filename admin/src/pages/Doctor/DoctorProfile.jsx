@@ -50,7 +50,7 @@ const DoctorProfile = () => {
 
       <div className='flex flex-col gap-4 m-5'>
         <div>
-          <img className='bg-primary/80 w-full sm:max-w-64 rounded-lg' src={docData.imageUrl} alt="" />
+          <img className='bg-primary/80 w-full sm:max-w-64 rounded-lg' src={profileData.imageUrl} alt="" />
         </div>
 
         {/* ------- doc info name, degree, experience -------- */}

@@ -7,14 +7,14 @@ import { assets } from '../../assets/assets'
 
 const DoctorAppointments = () => {
 
-  const { doctorToken, appointments, fetchAppointments, completeAppointment, cancelAppointment } = useContext(DoctorContext)
+  const { doctorToken, appointments, getDoctorAppointments, completeAppointment, cancelAppointment } = useContext(DoctorContext)
   const { calculateAge, formatSlotDate, currencySymbol } = useContext(AppContext)
 
   useEffect(() => 
     {
       if (doctorToken)
       {
-        fetchAppointments()
+        getDoctorAppointments()
       }
     }, [doctorToken])
 

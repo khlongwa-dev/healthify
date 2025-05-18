@@ -6,7 +6,7 @@ export const DoctorContext = createContext()
 
 const DoctorContextProvider = ({ children }) => {
   const [doctorToken, setDoctorToken] = useState(
-    localStorage.getItem('dToken') || ''
+    localStorage.getItem('doctorToken') || ''
   )
   const [appointments, setAppointments] = useState([])
   const [dashboardStats, setDashboardStats] = useState(null)
