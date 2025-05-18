@@ -5,7 +5,7 @@ import { AppContext } from '../../context/AppContext'
 
 const DoctorDashboard = () => {
 
-  const { doctorToken, dashboardStats, setDashboardStats, fetchDashboardStats, completeAppointment, cancelAppointment } = useContext(DoctorContext)
+  const { doctorToken, dashboardStats, fetchDashboardStats, completeAppointment, cancelAppointment } = useContext(DoctorContext)
   const { currencySymbol, formatSlotDate } = useContext(AppContext)
 
   useEffect(() => 
