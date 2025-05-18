@@ -15,7 +15,7 @@ const AdminContextProvider = ({ children }) => {
   // Fetch all doctors
   const fetchDoctors = async () => {
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.get(
         `${backendUrl}api/admin/doctors-list`,
         {},
         {
