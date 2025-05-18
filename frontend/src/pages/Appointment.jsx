@@ -99,7 +99,7 @@ const Appointment = () => {
           SlotDate: slotDate,
           SlotTime: slotTime
         },
-        { headers: { token } }
+        {headers:{Authorization: `Bearer ${token}`}}
       )
       
 
@@ -107,6 +107,7 @@ const Appointment = () => {
         toast.success(data.message)
         getDoctorsData()
         navigate('/user-appointments')
+        console.log(docInfo)
       } else {
         toast.error(data.message)
       }

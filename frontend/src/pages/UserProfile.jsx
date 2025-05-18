@@ -21,13 +21,14 @@ const UserProfile = () => {
       formData.append('DoB', userData.doB)
       
       image && formData.append('ImageUrl', image)
-      const {data} = await axios.post(backendUrl + 'api/user/update-profile', formData, {headers:{token}})
+      const {data} = await axios.put(backendUrl + 'api/user/update-profile', formData, {headers:{Authorization: `Bearer ${token}`}})
 
       if (data.success) {
         toast.success(data.message)
-        await loadUserProfileData()
         setIsEdit(false)
         setImage(false)
+        await loadUserProfileData()
+        
       } else {
         toast.error(data.message)
       }

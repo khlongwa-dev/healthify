@@ -16,10 +16,10 @@ const UserAppointments = () => {
 
   const getUserAppointments = async () => {
     try {
-      const {data} = await axios.get(backendUrl + 'api/user/get-appointments', {headers:{token}})
+      const {data} = await axios.get(backendUrl + 'api/user/get-appointments', {headers:{Authorization: `Bearer ${token}`}})
 
       if (data.success) {
-        setAppointments(data.appointments.reverse())
+        setAppointments(data.appointments)
         getDoctorsData()
         console.log(data.appointments)
       }
@@ -31,7 +31,25 @@ const UserAppointments = () => {
 
   const cancelAppointment = async (appointmentId) => {
     try {
-      const {data} = await axios.post(backendUrl + 'api/user/cancel-appointment', {appointmentId}, {headers:{token}})
+      
+      const {data} = await axios.put(backendUrl + 'api/user/cancel-appointment', {appointmentId}, {headers:{Authorization: `Bearer ${token}`}})
+      
+      if(data.success) {
+        toast.success(data.message)
+        getUserAppointments()
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
+  const clearAppointment = async (appointmentId) => {
+    try {
+      
+      const {data} = await axios.post(backendUrl + 'api/user/clear-appointment', {appointmentId}, {headers:{Authorization: `Bearer ${token}`}})
       
       if(data.success) {
         toast.success(data.message)
@@ -77,8 +95,11 @@ const UserAppointments = () => {
             <div className='flex flex-col gap-2 justify-end'>
               {!item.cancelled && !item.isCompleted && <button onClick={()=>payOnline()} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>}
               {!item.cancelled && !item.isCompleted && <button onClick={()=>cancelAppointment(item.id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>Cancel appointment</button>}
+              
               {item.cancelled && !item.isCompleted && <button className='sm:min-w-48 py-2 border border-red-500 rounded text-red-500'>Appointment cancelled</button>}
               {item.isCompleted && <button className='sm:min-w-48 py-2 border border-green-500 rounded text-green-500'>Appointment completed</button>}
+              {item.isCompleted || item.cancelled  && <button onClick={()=>clearAppointment(item.id)} className='text-sm text-orange-400 text-center sm:min-w-48 py-2 border border-orange-400 rounded hover:bg-orange-400 hover:text-white transition-all duration-300'>Clear appointment</button>}
+              {item.isCompleted && <button onClick={()=>clearAppointment(item.id)} className='text-sm text-orange-400 text-center sm:min-w-48 py-2 border border-orange-400 rounded hover:bg-orange-400 hover:text-white transition-all duration-300'>Clear appointment</button>}
             </div>
           </div>
         ))}
