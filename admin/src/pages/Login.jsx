@@ -1,52 +1,50 @@
-import React, { useState, useContext } from 'react'
-import { AdminContext } from '../context/AdminContext'
-import axios from 'axios'
-import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
-import { DoctorContext } from '../context/DoctorContext'
+import React, { useState, useContext } from 'react';
+import { AdminContext } from '../context/AdminContext';
+import { DoctorContext } from '../context/DoctorContext';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Login = () => {
+  const [role, setRole] = useState('Admin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const [role, setRole] = useState('Admin')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const {setAdminToken, backendUrl} = useContext(AdminContext)
-    const {setDoctorToken} = useContext(DoctorContext)
+  const { setAdminToken, backendUrl } = useContext(AdminContext);
+  const { setDoctorToken } = useContext(DoctorContext);
 
-    const navigate = useNavigate()
-    
-    const onSubmitHandler = async (event)=> {
-        event.preventDefault()
+  const navigate = useNavigate();
 
-        try {
+  const handleLogin = async (endpoint, tokenKey, setToken) => {
+    try {
+      const { data } = await axios.post(`${backendUrl}api/authentication/${endpoint}/login`, {
+        email,
+        password,
+      });
 
-            if (role === 'Admin') {
-                const {data} = await axios.post(backendUrl + 'api/authentication/admin/login', {email, password})
-            
-                if (data.token) {
-                    localStorage.setItem('adminToken', data.token)
-                    setAdminToken(data.token)
-                    toast.success(data.message)
-                } else {
-                    toast.error(data.message)
-                }
-            } else {
-                const {data} = await axios.post(backendUrl + 'api/authentication/doctor/login', {email, password})
-
-                if (data.token) {
-                    localStorage.setItem('doctorToken', data.token)
-                    setDoctorToken(data.token)
-                    toast.success(data.message)
-                } else {
-                    toast.error(data.message)
-                }
-            }
-            
-        } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
+      if (data.token) {
+        localStorage.setItem(tokenKey, data.token);
+        setToken(data.token);
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || 'Login failed');
     }
+  };
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
+
+    if (role === 'Admin') {
+      await handleLogin('admin', 'adminToken', setAdminToken);
+    } else {
+      await handleLogin('doctor', 'doctorToken', setDoctorToken);
+    }
+  };
+
 
   return (
     <form onSubmit={onSubmitHandler} className='min-h-[80vh] flex items-center'>
@@ -63,8 +61,8 @@ const Login = () => {
             <button className='bg-primary text-white w-full py-2 rounded-md text-base' type='submit'>Login</button>
             {
                 state === 'Admin'
-                ? <p>Doctor Login? <span className='text-primary underline cursor-pointer' onClick={()=>setState('Doctor')}>Click here</span></p>
-                : <p>Admin Login? <span className='text-primary underline cursor-pointer' onClick={()=>setState('Admin')}>Click here</span></p>
+                ? <p>Doctor Login? <span className='text-primary underline cursor-pointer' onClick={()=>setRole('Doctor')}>Click here</span></p>
+                : <p>Admin Login? <span className='text-primary underline cursor-pointer' onClick={()=>setRole('Admin')}>Click here</span></p>
             }
         </div>
     </form>
