@@ -6,14 +6,14 @@ import { AppContext } from '../../context/AppContext'
 import { assets } from '../../assets/assets'
 
 const AllAppointments = () => {
-  const { aToken, appointments, getAllAppointments, cancelAppointment } = useContext(AdminContext)
-  const { calculateAge, slotDateFormat, currency } = useContext(AppContext)
+  const { adminToken, appointments, fetchAppointments, cancelAppointment } = useContext(AdminContext)
+  const { calculateAge, formatSlotDate, currencySymbol } = useContext(AppContext)
 
   useEffect(() => {
-    if (aToken) {
-      getAllAppointments()
+    if (adminToken) {
+      fetchAppointments()
     }
-  }, [aToken])
+  }, [adminToken])
 
   return (
     <div className='w-full max-w-6xl m-5'>
@@ -35,11 +35,11 @@ const AllAppointments = () => {
               <img className='w-8 rounded-full' src={item.user.imageUrl} alt="" /> <p>{item.user.name}</p>
             </div>
             <p className='max-sm:hidden'>{calculateAge(item.user.doB)}</p>
-            <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
+            <p>{formatSlotDate(item.slotDate)}, {item.slotTime}</p>
             <div className='flex items-center gap-2'>
               <img className='w-8 rounded-full bg-gray-200' src={item.doctor.imageUrl} alt="" /> <p>{item.doctor.name}</p>
             </div>
-            <p>{currency}{item.doctorFee}</p>
+            <p>{currencySymbol}{item.doctorFee}</p>
             {
               item.cancelled
                 ? <p className='text-red-400 text-xs font-medium'>Cancelled</p>
