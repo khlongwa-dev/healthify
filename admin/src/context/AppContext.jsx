@@ -2,37 +2,34 @@ import React, { createContext } from 'react'
 
 export const AppContext = createContext()
 
-const AppContextProvider = (props) => {
-    const currency = "R";
+const AppContextProvider = ({ children }) => {
+  const currencySymbol = 'R'
 
-    const calculateAge = (dob) => {
-        const today = new Date()
-        const birthDate = new Date(dob)
+  const calculateAge = (dob) => {
+    const today = new Date()
+    const birthDate = new Date(dob)
+    const age = today.getFullYear() - birthDate.getFullYear()
+    return age
+  }
 
-        let age = today.getFullYear() - birthDate.getFullYear()
+  const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-        return age
-    }
+  const formatSlotDate = (slotDate) => {
+    const [day, month, year] = slotDate.split('-')
+    return `${day} ${monthNames[Number(month)]} ${year}`
+  }
 
-    const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-  
-    const slotDateFormat = (slotDate) => {
-        const dateArray = slotDate.split('-')
+  const contextValue = {
+    calculateAge,
+    formatSlotDate,
+    currencySymbol
+  }
 
-        return dateArray[0] + " " + months[Number(dateArray[1])] + " " + dateArray[2]
-    }
-
-    const value = {
-        calculateAge,
-        slotDateFormat,
-        currency
-    }
-
-    return (
-        <AppContext.Provider value= {value}>
-            {props.children}
-        </AppContext.Provider>
-    )
+  return (
+    <AppContext.Provider value={contextValue}>
+      {children}
+    </AppContext.Provider>
+  )
 }
 
 export default AppContextProvider
