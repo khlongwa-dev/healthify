@@ -17,10 +17,10 @@ import DoctorProfile from './pages/Doctor/DoctorProfile';
 import AuthenticationRedirect from './components/AuthenticationRedirect';
 
 const App = () => {
-  const { aToken } = useContext(AdminContext);
-  const { dToken } = useContext(DoctorContext);
+  const { adminToken } = useContext(AdminContext);
+  const { doctorToken } = useContext(DoctorContext);
 
-  return aToken || dToken ? (
+  return adminToken || doctorToken ? (
     <div className='bg-[#F8F9FD]'>
       <ToastContainer />
       <Navbar />
