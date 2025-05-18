@@ -12,6 +12,21 @@ const AdminContextProvider = ({ children }) => {
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL
 
+  // Get dashboard statistics
+  const fetchDashboardStats = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}api/admin/dashboard`, {
+        headers: { Authorization: `Bearer ${adminToken}` }
+      })
+
+      if (data.success) {
+        setDashboardStats(data.dashdata)
+      }
+    } catch (err) {
+      toast.error(err.message)
+    }
+  }
+
   // Fetch all doctors
   const fetchDoctors = async () => {
     try {
@@ -36,7 +51,7 @@ const AdminContextProvider = ({ children }) => {
   // Toggle doctor availability
   const toggleDoctorAvailability = async (doctorId) => {
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         `${backendUrl}api/admin/change-availability`,
         { doctorId },
         {
@@ -94,20 +109,7 @@ const AdminContextProvider = ({ children }) => {
     }
   }
 
-  // Get dashboard statistics
-  const fetchDashboardStats = async () => {
-    try {
-      const { data } = await axios.get(`${backendUrl}api/admin/dashboard`, {
-        headers: { Authorization: `Bearer ${adminToken}` }
-      })
-
-      if (data.success) {
-        setDashboardStats(data.dashdata)
-      }
-    } catch (err) {
-      toast.error(err.message)
-    }
-  }
+  
 
   const contextValue = {
     adminToken,
